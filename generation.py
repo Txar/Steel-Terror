@@ -57,11 +57,18 @@ def generateRoom(size = (20, 16), shore = False, water = False):
 
 	shoreAdd = int(shore) * 0.3
 
+	# Full water tile
+	default = 0
+	if water: default = 1
+
 	room = []
 	for i in range(h):
 		room.append([])
 		for j in range(w):
-			room[i].append(0)
+			room[i].append(default)
+
+
+	if water: return room
 
 	# Creating tile noises
 	wNoise = PerlinNoise(octaves = 10, seed = randint(1, 50))
@@ -69,17 +76,13 @@ def generateRoom(size = (20, 16), shore = False, water = False):
 	bNoise = PerlinNoise(octaves = 10, seed = randint(1, 50))
 	wtNoise = PerlinNoise(octaves = 10, seed = randint(1, 50))
 
-	# Full water tile
-	default = 4
-	if water: default = 1
+	
 
 	# Outer rim
 	for i in range(h):
 		for j in range(w):
 			if bNoise([j / w, i / h]) >= 0.1:
-				room[i][j] = default
-
-	if water: return room
+				room[i][j] = 4
 
 	# Inner room
 	for i in range(1, h - 1):
@@ -158,7 +161,7 @@ def generateMap(size, dungeons):
 
 	return newMapList
 
-# One-time process, takes a long time
+# One-time process, takes a long
 def generateRooms(dir = "rooms"):
 	if not os.path.exists(dir):
 		os.system("mkdir rooms")
