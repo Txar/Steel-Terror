@@ -9,11 +9,31 @@ def printMap(l):
 	for i in l:
 		o = ""
 		for j in i:
-			o += str(j)
+			o += str(j) * 2
 		print(o)
 
 def dist(x, y, x2, y2):
 	return sqrt(abs(x - x2) ** 2 + abs(y - y2) ** 2)
+
+def shore(x, y, w, h, mapList):
+	if mapList[y][x] == 0:
+		for i in range(-1, 2):
+			for j in range(-1, 2):
+				if y + i >= h or y + i < 0 or x + j >= w or x + j < 0: continue
+				if mapList[y + i][x + j] != 0:
+					return True
+	return False
+
+def copyMap(a):
+	b = []
+	p = -1
+	for i in a:
+		b.append([])
+		p += 1
+		for j in i:
+			b[p].append(j)
+
+	return b
 
 """
 Codes:
@@ -21,7 +41,8 @@ Codes:
 1 - Plains
 2 - Desert
 3 - Ice
-4 - Dungeon
+4 - Beach
+5 - Dungeon
 """
 
 def generateMap(size, dungeons):
@@ -43,17 +64,17 @@ def generateMap(size, dungeons):
 	# Map generation
 	center = [floor(w / 2), floor(h / 2)]
 	falloff = size // 2 - 3
-	for i in range(len(mapList)):
-		for j in range(len(mapList[i])):
-			if(dist(j, i, center[0], center[1]) >= falloff + randint(0, falloff // 3)):
+	for i in range(h):
+		for j in range(w):
+			if dist(j, i, center[0], center[1]) >= falloff + randint(0, falloff // 3):
 				mapList[i][j] = 0
 
 			# Desert
-			if(abs(dNoise([j / w, i / h])) >= 0.2 and mapList[i][j] != 0):
+			if abs(dNoise([j / w, i / h])) >= 0.2 and mapList[i][j] != 0:
 				mapList[i][j] = 2
 
 			# Ice
-			if(abs(iNoise([j / w, i / h])) >= 0.2 and mapList[i][j] != 0 and mapList[i][j] != 2):
+			if abs(iNoise([j / w, i / h])) >= 0.2 and mapList[i][j] != 0 and mapList[i][j] != 2:
 				mapList[i][j] = 3
 
 	# Dungeons
@@ -62,11 +83,19 @@ def generateMap(size, dungeons):
 			x = randint(0, w - 1)
 			y = randint(0, h - 1)
 
-			if(mapList[y][x] != 0):
-				mapList[y][x] = 4
+			if mapList[y][x] != 0:
+				mapList[y][x] = 5
 				break
 
+	# Avoid list reassignment
+	newMapList = copyMap(mapList)
 
-	return mapList
+	# Shores
+	for i in range(h):
+		for j in range(w):
+			if shore(j, i, w, h, mapList):
+				newMapList[i][j] = 4
+
+	return newMapList
 
 printMap(generateMap(25, 4))
