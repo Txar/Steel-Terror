@@ -161,7 +161,7 @@ def generateMap(size, dungeons):
 
 	return newMapList
 
-# One-time process, takes a long
+# One-time process, takes a long time
 def generateRooms(dir = "rooms"):
 	if not os.path.exists(dir):
 		os.system("mkdir rooms")
