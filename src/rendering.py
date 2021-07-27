@@ -3,6 +3,7 @@ from PIL import Image
 from math import *
 from pygame import *
 from random import *
+from ninepatch import *
 
 global w, h, size, forest, water, screen, centerPos
 
@@ -11,6 +12,17 @@ def surfaceImage(pilImage):
 
 def split(word):
 	return [char for char in word]
+
+# Make a surface out of a ninepatched surface (image url, output w/h, pixel scale)
+def surfaceNinepatch(url, w, h, scale):
+	np = Ninepatch(url)
+
+	img = np.render(w, h)
+
+	ww, hh = img.size
+	img = img.resize((ww * scale, hh * scale), Image.NONE)
+
+	return surfaceImage(img)
 
 # a = value, ra = dimension, ts = tile size
 def calculateSize(a, ra, ts):
@@ -27,7 +39,7 @@ def calculateSize(a, ra, ts):
 
 	return m
 
-# Load the initial data, returns the screen
+# Load the initial data, returns the screen and size scale
 def loadScreen(wd, hd):
 	global w, h, size, centerPos
 	w = wd
@@ -41,7 +53,7 @@ def loadScreen(wd, hd):
 	screen = display.set_mode((scw, sch), RESIZABLE)
 	centerPos = (scw // 2 - (size * w) // 2, sch // 2 -(size * h) // 2)
 
-	return screen
+	return screen, size // 8
 
 # Load all image data
 def loadImages():
@@ -108,4 +120,6 @@ def blitRoom(data, screen):
 def blitWater(waterData, screen, t):
 	global size, centerPos
 	for i in waterData:
-		screen.blit(water[t % 8], (centerPos[0] + size * i[0], centerPos[1] + size * i[1]))
+		# Make the water swing instead of just moving
+		tt = int(min(((sin(radians(t)) + 1) / 2) * 33, 32))
+		screen.blit(water[tt % 8], (centerPos[0] + size * i[0], centerPos[1] + size * i[1]))

@@ -1,3 +1,4 @@
+# Testing main.py, not used
 import pygame
 from pygame.locals import *
 
