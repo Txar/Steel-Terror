@@ -93,6 +93,7 @@ def renderRoom(room, biome):
 	data = []
 	waterData = []
 	bushData = []
+	breakableData = []
 	idd = 0
 	x = 0
 	y = 0
@@ -108,7 +109,8 @@ def renderRoom(room, biome):
 			elif j == 2:
 				data[idd].append(biome[1])
 			elif j == 3:
-				data[idd].append(biome[2])
+				data[idd].append(None)
+				breakableData.append([x, y])
 			elif j == 4:
 				data[idd].append(None)
 				bushData.append([x, y])
@@ -118,7 +120,7 @@ def renderRoom(room, biome):
 
 		idd += 1
 
-	return data, waterData, bushData
+	return data, waterData, bushData, breakableData
 
 # Draw the room data into the screen
 def blitRoom(data, screen):
@@ -140,3 +142,8 @@ def blitBush(bushData, biome, screen):
 	for i in bushData:
 		screen.blit(biome[0], (centerPos[0] + size * i[0], centerPos[1] + size * i[1]))
 		screen.blit(biome[3], (centerPos[0] + size * i[0], centerPos[1] + size * i[1]))
+
+def blitBreakBlock(breakableData, biome, screen):
+	global size, centerPos
+	for i in breakableData:
+		screen.blit(biome[2], (centerPos[0] + size * i[0], centerPos[1] + size * i[1]))
