@@ -36,9 +36,9 @@ scw, sch = infoObject.current_w, infoObject.current_h
 w = 20
 h = 16
 
-size = (min(calculateSize(scw, w, 2), calculateSize(sch, h, 2)) - 1) * 2
+size = (min(calculateSize(scw, w, 2), calculateSize(sch - 50, h, 2)) - 1) * 2
 
-screen = display.set_mode((scw, sch), FULLSCREEN)
+screen = display.set_mode((scw, sch), RESIZABLE)
 surface = Surface((size * w, size * h))
 centerPos = (scw // 2 - (size * w) // 2, sch // 2 -(size * h) // 2)
 
@@ -46,7 +46,7 @@ for i in range(8):
 	water.append(pilImageToSurface(Image.open("../tiles/water/water" + str(i) + ".png").resize((size, size), Image.NONE)))
 
 for i in range(1, 5):
-	forest.append(pilImageToSurface(Image.open("../tiles/forest/" + str(i) + ".png").resize((size, size), Image.NONE)))
+	forest.append(pilImageToSurface(Image.open("../tiles/ice/" + str(i) + ".png").resize((size, size), Image.NONE)))
 
 room = open("../rooms/{0}.room".format(randint(0, 119)), "r")
 
@@ -88,9 +88,20 @@ def blitRoom(data, screen):
 				screen.blit(forest[0], (centerPos[0] + size * j, centerPos[1] + size * i))
 			screen.blit(data[i][j], (centerPos[0] + size * j, centerPos[1] + size * i))
 
-blitRoom(renderRoom(room), screen)
+def blitWater(data, screen, t):
+	for i in range(len(data) - 1):
+		for j in range(len(data[0])):
+			if data[i][j] == water[0]:
+				screen.blit(water[t % 8], (centerPos[0] + size * j, centerPos[1] + size * i))
+
+data = renderRoom(room)
+blitRoom(data, screen)
 display.update()
 
+t = 0
 while 1:
 	event.get()
+	blitWater(data, screen, floor(t))
+	display.update()
+	t += 0.01
 
