@@ -122,7 +122,7 @@ def renderRoom(room, biome):
 
 		idd += 1
 
-	return data, waterData, bushData, breakableData
+	return data, waterData, bushData, breakableData, room
 
 # Draw the room data into the screen
 def blitRoom(data, screen):
@@ -153,6 +153,7 @@ def blitBreakBlock(breakableData, biome, screen):
 def blitPlayer(playerxy, tankType, screen, t):
 	global size, centerPos, tanks
 	#tank type 0 is the default one, 1 is the fast guy, 2 is the slow tanky tank, 3 is an epic unlocked at 100%
+	g = size/2
 	tank = Surface((size, size))
 	tank.blit(tanks, (0, 0), (tankType * size, size * playerxy[2] * 2, size, size))
-	screen.blit(transform.rotate(tank, playerxy[2]*90), (centerPos[0] + size * playerxy[0] * 8, centerPos[1] + size * playerxy[1] * 8))
+	screen.blit(transform.rotate(tank, playerxy[2]*90), (centerPos[0] + size * playerxy[0] - g, centerPos[1] + size * playerxy[1] - g))
