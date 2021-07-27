@@ -1,6 +1,7 @@
 from PIL import Image
 from math import *
 from pygame import *
+from random import *
 
 water = []
 forest = []
@@ -11,15 +12,35 @@ def pilImageToSurface(pilImage):
 def split(word):
 	return [char for char in word]
 
+# a = value, ra = dimension, ts = tile size
+def calculateSize(a, ra, ts):
+	preValue = a
+	value = a
+	m = 0
+	while 1:
+		m += 1
+		value -= ts * ra
+		if value < 0:
+			aa = preValue
+			break
+		preValue = value
+
+	return m
+
+
 init()
 
-size = 16
+infoObject = display.Info()
+scw, sch = infoObject.current_w, infoObject.current_h
 
 w = 20
 h = 16
 
-screen = display.set_mode((size * w, size * h))
+size = (min(calculateSize(scw, w, 8), calculateSize(sch, h, 8)) - 2) * 8
+
+screen = display.set_mode((scw, sch), FULLSCREEN)
 surface = Surface((size * w, size * h))
+centerPos = (scw // 2 - (size * w) // 2, sch // 2 -(size * h) // 2)
 
 for i in range(8):
 	water.append(pilImageToSurface(Image.open("../tiles/water/water" + str(i) + ".png").resize((size, size), Image.NONE)))
@@ -27,7 +48,7 @@ for i in range(8):
 for i in range(1, 5):
 	forest.append(pilImageToSurface(Image.open("../tiles/forest/" + str(i) + ".png").resize((size, size), Image.NONE)))
 
-room = open("../rooms/0.room", "r")
+room = open("../rooms/{0}.room".format(randint(0, 119)), "r")
 
 def renderRoom(room):
 	r = room.read()
@@ -64,8 +85,8 @@ def blitRoom(data, screen):
 	for i in range(len(data) - 1):
 		for j in range(len(data[0])):
 			if data[i][j] == forest[3]:
-				screen.blit(forest[0], (size * j, size * i))
-			screen.blit(data[i][j], (size * j, size * i))
+				screen.blit(forest[0], (centerPos[0] + size * j, centerPos[1] + size * i))
+			screen.blit(data[i][j], (centerPos[0] + size * j, centerPos[1] + size * i))
 
 blitRoom(renderRoom(room), screen)
 display.update()
