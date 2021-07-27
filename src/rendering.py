@@ -57,7 +57,7 @@ def loadScreen(wd, hd):
 
 # Load all image data
 def loadImages():
-	global size, forest, water
+	global size, forest, water, tanks
 
 	water = []
 
@@ -74,6 +74,8 @@ def loadImages():
 		desert.append(surfaceImage(Image.open("tiles/desert/" + str(i) + ".png").resize((size, size), Image.NONE)))
 		ice.append(surfaceImage(Image.open("tiles/ice/" + str(i) + ".png").resize((size, size), Image.NONE)))
 		dungeon.append(surfaceImage(Image.open("tiles/dungeon/" + str(i) + ".png").resize((size, size), Image.NONE)))
+
+	tanks = surfaceImage(Image.open("sprites/tanks.png").resize((size * 4, size * 8), Image.NONE))
 
 	return forest, desert, ice, dungeon
 
@@ -147,3 +149,10 @@ def blitBreakBlock(breakableData, biome, screen):
 	global size, centerPos
 	for i in breakableData:
 		screen.blit(biome[2], (centerPos[0] + size * i[0], centerPos[1] + size * i[1]))
+
+def blitPlayer(playerxy, tankType, screen, t):
+	global size, centerPos, tanks
+	#tank type 0 is the default one, 1 is the fast guy, 2 is the slow tanky tank, 3 is an epic unlocked at 100%
+	tank = Surface((size, size))
+	tank.blit(tanks, (0, 0), (tankType * size, size * playerxy[2] * 2, size, size))
+	screen.blit(transform.rotate(tank, playerxy[2]*90), (centerPos[0] + size * playerxy[0] * 8, centerPos[1] + size * playerxy[1] * 8))
