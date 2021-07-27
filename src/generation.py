@@ -1,4 +1,3 @@
-# Generation by ThePythonGuy3
 from math import *
 from random import *
 from perlin_noise import PerlinNoise
