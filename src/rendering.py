@@ -156,4 +156,6 @@ def blitPlayer(playerxy, tankType, screen, t):
 	g = size/2
 	tank = Surface((size, size))
 	tank.blit(tanks, (0, 0), (tankType * size, size * playerxy[2] * 2, size, size))
+	#the mask is supposed to be applied to the "tank" surface
+	#and after, the tracks are supposed to be drawn
 	screen.blit(transform.rotate(tank, playerxy[2]*90), (centerPos[0] + size * playerxy[0] - g, centerPos[1] + size * playerxy[1] - g))
