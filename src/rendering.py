@@ -36,7 +36,7 @@ scw, sch = infoObject.current_w, infoObject.current_h
 w = 20
 h = 16
 
-size = (min(calculateSize(scw, w, 8), calculateSize(sch, h, 8)) - 2) * 8
+size = (min(calculateSize(scw, w, 2), calculateSize(sch, h, 2)) - 1) * 2
 
 screen = display.set_mode((scw, sch), FULLSCREEN)
 surface = Surface((size * w, size * h))
