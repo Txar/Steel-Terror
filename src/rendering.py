@@ -58,17 +58,28 @@ def loadScreen(wd, hd):
 # Load all image data
 def loadImages():
 	global size, forest, water
+
 	water = []
+
 	forest = []
+	desert = []
+	ice = []
+	dungeon = []
 
 	for i in range(8):
 		water.append(surfaceImage(Image.open("tiles/water/water" + str(i) + ".png").resize((size, size), Image.NONE)))
 
 	for i in range(1, 5):
 		forest.append(surfaceImage(Image.open("tiles/forest/" + str(i) + ".png").resize((size, size), Image.NONE)))
+		desert.append(surfaceImage(Image.open("tiles/desert/" + str(i) + ".png").resize((size, size), Image.NONE)))
+		ice.append(surfaceImage(Image.open("tiles/ice/" + str(i) + ".png").resize((size, size), Image.NONE)))
+		dungeon.append(surfaceImage(Image.open("tiles/dungeon/" + str(i) + ".png").resize((size, size), Image.NONE)))
 
-# Returns the image data of a room, and the position data of water tiles
-def renderRoom(room):
+	return forest, desert, ice, dungeon
+
+
+# Returns the image data of a room, and the position data of layers
+def renderRoom(room, biome):
 	r = room.read()
 	room.close()
 
@@ -81,6 +92,7 @@ def renderRoom(room):
 
 	data = []
 	waterData = []
+	bushData = []
 	idd = 0
 	x = 0
 	y = 0
@@ -89,37 +101,42 @@ def renderRoom(room):
 		for q in i:
 			j = int(q)
 			if j == 0:
-				data[idd].append(water[0])
+				data[idd].append(None)
 				waterData.append([x, y])
 			elif j == 1:
-				data[idd].append(forest[0])
+				data[idd].append(biome[0])
 			elif j == 2:
-				data[idd].append(forest[1])
+				data[idd].append(biome[1])
 			elif j == 3:
-				data[idd].append(forest[2])
+				data[idd].append(biome[2])
 			elif j == 4:
-				data[idd].append(forest[3])
+				data[idd].append(None)
+				bushData.append([x, y])
 			x += 1
 		y += 1
 		x = 0
 
 		idd += 1
 
-	return data, waterData
+	return data, waterData, bushData
 
 # Draw the room data into the screen
 def blitRoom(data, screen):
 	global centerPos
 	for i in range(len(data) - 1):
 		for j in range(len(data[0])):
-			if data[i][j] == forest[3]:
-				screen.blit(forest[0], (centerPos[0] + size * j, centerPos[1] + size * i))
+			if data[i][j] == None: continue
 			screen.blit(data[i][j], (centerPos[0] + size * j, centerPos[1] + size * i))
 
 # Animate water with data as positions, t is ticks
 def blitWater(waterData, screen, t):
 	global size, centerPos
 	for i in waterData:
-		# Make the water swing instead of just moving
 		tt = int(min(((sin(radians(t)) + 1) / 2) * 33, 32))
 		screen.blit(water[tt % 8], (centerPos[0] + size * i[0], centerPos[1] + size * i[1]))
+
+def blitBush(bushData, biome, screen):
+	global size, centerPos
+	for i in bushData:
+		screen.blit(biome[0], (centerPos[0] + size * i[0], centerPos[1] + size * i[1]))
+		screen.blit(biome[3], (centerPos[0] + size * i[0], centerPos[1] + size * i[1]))
