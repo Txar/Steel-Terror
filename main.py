@@ -14,11 +14,17 @@ clock = time.Clock()
 playerSpeed = 2.5
 playerBulletSpeed = 3.5
 playerxy = [0.5, 0.5, 0]
+health = 3
+ammo = 50
 playerBulletSpeed = 4.5
 playerShootCooldown = 1.5
 bullets = [] #[bullet x, bullet y, bullet direction, bullet distance to move]
+enemies = [] #[x, y, direction, tank type, distance to move]
 tankStats = [0, [2.5, 4.5, 1.5, 0, 0], [3.7, 4.5, 2.7, 1, 0], [1.2, 5.5, 1.0, 2, 1], [3.1, 5.5, 0.8, 2, 1]] #tank type used currently, [speed, bullet speed, shooting cooldown, sprite, tracks sprite]
-
+spawnEnemy(enemies, 5, 5, 2)
+spawnEnemy(enemies, 3, 2, 1)
+spawnEnemy(enemies, 10, 8, 0)
+print(enemies)
 biome = desert
 room = open("rooms/{0}.room".format(randint(0, 119)), "r")
 
@@ -33,13 +39,15 @@ while 1:
 
 	aaaa = button(screen, mouse, size, 40, 40, 2, 2, "sprites/ui/button.9.png", "sprites/ui/buttonPressed.9.png", "sprites/ui/play.png")
 
+	u = 0
 	for e in ee:
 		if e.type == QUIT:
 			quit()
 			exit()
 		if e.type == MOUSEBUTTONDOWN and aaaa:
-			print("no")
+			u = 1
 
+	if u: break
 	display.update()
 
 t = 0
@@ -70,7 +78,7 @@ while 1:
 	blitRoom(data, screen)
 
 	blitPlayer(playerxy, [tanks[tankSprite], treads[tankTrackSprite]], screen, t / 5, uu)
-
+	blitEnemies(enemies, screen, t, tankStats, [tanks, treads])
 	blitWater(waterData, screen, floor(t))
 	
 	blitBullets(bullets, screen)# Bullet rendering goes here

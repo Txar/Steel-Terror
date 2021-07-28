@@ -236,6 +236,18 @@ def blitPlayer(playerxy, tp, screen, t, moving):
 
 	screen.blit(tank, (centerPos[0] + size * playerxy[0] - g, centerPos[1] + size * playerxy[1] - g))
 
+def blitEnemies(enemies, screen, t, tankStats, tp):
+	global size, centerPos
+	tanks, treads = tp[0], tp[1]
+	g = size/2
+	for i in enemies:
+		tt = 0
+		if i[4] > 0: tt = int(t)
+		enemy = Surface((size, size), SRCALPHA, 32)
+		enemy.blit(transform.rotate(treads[i[4]][tt % 2], i[2] * 90), (0, 0))
+		enemy.blit(transform.rotate(tanks[i[3]][i[2]], i[2] * 90), (0, 0))
+		screen.blit(enemy, (centerPos[0] + size * i[0] - g, centerPos[1] + size * i[1] - g))
+
 def blitBullets(bullets, screen):
 	global bullet, size
 	g = size/2

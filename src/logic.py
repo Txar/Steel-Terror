@@ -58,3 +58,6 @@ def checkBulletCollisions(bullets, wholeRoomData, breakableData):
 		elif k == 2: continue
 		bullets2.append(bullets[i])
 	return bullets2, wholeRoomData, breakableData
+
+def spawnEnemy(enemies, x, y, tt):
+	enemies.append([x, y, 0, tt, 0])
