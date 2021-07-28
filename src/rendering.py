@@ -57,7 +57,7 @@ def loadScreen(wd, hd):
 
 # Load all image data
 def loadImages():
-	global size, forest, water, tanks
+	global size, forest, water, tanks, bullet
 
 	water = []
 
@@ -76,6 +76,7 @@ def loadImages():
 		dungeon.append(surfaceImage(Image.open("tiles/dungeon/" + str(i) + ".png").resize((size, size), Image.NONE)))
 
 	tanks = surfaceImage(Image.open("sprites/tanks.png").resize((size * 4, size * 8), Image.NONE))
+	bullet = surfaceImage(Image.open("sprites/bullet.png").resize((size, size), Image.NONE))
 
 	return forest, desert, ice, dungeon
 
@@ -111,10 +112,10 @@ def renderRoom(room, biome):
 			elif j == 2:
 				data[idd].append(biome[1])
 			elif j == 3:
-				data[idd].append(None)
+				data[idd].append(biome[0])
 				breakableData.append([x, y])
 			elif j == 4:
-				data[idd].append(None)
+				data[idd].append(biome[0])
 				bushData.append([x, y])
 			x += 1
 		y += 1
@@ -142,7 +143,6 @@ def blitWater(waterData, screen, t):
 def blitBush(bushData, biome, screen):
 	global size, centerPos
 	for i in bushData:
-		screen.blit(biome[0], (centerPos[0] + size * i[0], centerPos[1] + size * i[1]))
 		screen.blit(biome[3], (centerPos[0] + size * i[0], centerPos[1] + size * i[1]))
 
 def blitBreakBlock(breakableData, biome, screen):
@@ -159,3 +159,9 @@ def blitPlayer(playerxy, tankType, screen, t):
 	#the mask is supposed to be applied to the "tank" surface
 	#and after, the tracks are supposed to be drawn
 	screen.blit(transform.rotate(tank, playerxy[2]*90), (centerPos[0] + size * playerxy[0] - g, centerPos[1] + size * playerxy[1] - g))
+
+def blitBullets(bullets, screen):
+	global bullet, size
+	g = size/2
+	for i in bullets:
+		screen.blit(transform.rotate(bullet, i[2]*90), (centerPos[0] + size * i[0] - g, centerPos[1] + size * i[1] - g))
