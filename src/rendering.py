@@ -198,6 +198,7 @@ def renderRoom(room, biome):
 # Draw the room data into the screen
 def blitRoom(data, screen):
 	global centerPos
+	screen.fill((0, 0, 0))
 	for i in range(len(data) - 1):
 		for j in range(len(data[0])):
 			if data[i][j] == None: continue
@@ -246,6 +247,7 @@ def blitEnemies(enemies, screen, t, tankStats, tp):
 		enemy = Surface((size, size), SRCALPHA, 32)
 		enemy.blit(transform.rotate(treads[i[4]][tt % 2], i[2] * 90), (0, 0))
 		enemy.blit(transform.rotate(tanks[i[3]][i[2]], i[2] * 90), (0, 0))
+		enemy.blit(tanks[i[3]][i[2]], (0, 0))
 		screen.blit(enemy, (centerPos[0] + size * i[0] - g, centerPos[1] + size * i[1] - g))
 
 def blitBullets(bullets, screen):

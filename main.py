@@ -19,18 +19,16 @@ ammo = 50
 playerBulletSpeed = 4.5
 playerShootCooldown = 1.5
 bullets = [] #[bullet x, bullet y, bullet direction, bullet distance to move]
-enemies = [] #[x, y, direction, tank type, distance to move]
+enemies = [] #[x, y, direction, tank type, distance to move, ticks since the last shot, how many times travel the "distance to move"]
 tankStats = [0, [2.5, 4.5, 1.5, 0, 0], [3.7, 4.5, 2.7, 1, 0], [1.2, 5.5, 1.0, 2, 1], [3.1, 5.5, 0.8, 2, 1]] #tank type used currently, [speed, bullet speed, shooting cooldown, sprite, tracks sprite]
-spawnEnemy(enemies, 5, 5, 2)
-spawnEnemy(enemies, 3, 2, 1)
-spawnEnemy(enemies, 10, 8, 0)
-print(enemies)
-biome = desert
+
+biome = forest
 room = open("rooms/{0}.room".format(randint(0, 119)), "r")
 
 display.toggle_fullscreen()
 
 data, waterData, bushData, breakableData, wholeRoomData = renderRoom(room, biome)
+spreadEnemy(enemies, wholeRoomData, 0)
 
 lastTicks = 0
 
@@ -63,6 +61,7 @@ while 1:
 		elif e.type == KEYDOWN and e.key == K_SPACE and t2 > fps*playerShootCooldown/2:
 			t2 = 0
 			spawnBullet(bullets, playerxy[0], playerxy[1], playerxy[2], playerBulletSpeed, fps)
+			spreadEnemy(enemies, wholeRoomData, 3)
 	keys = key.get_pressed()
 	distanceToMove = playerSpeed/fps
 	uu = 0
@@ -74,6 +73,7 @@ while 1:
 	playerxy = checkPlayerCollisions(playerxy, distanceToMove, wholeRoomData)
 	bullets = moveBullets(bullets)
 	bullets, wholeRoomData, breakableData = checkBulletCollisions(bullets, wholeRoomData, breakableData)
+	enemies, bullets = shootEnemies(enemies, bullets, wholeRoomData, tankStats, fps, playerxy)
 
 	blitRoom(data, screen)
 
