@@ -49,7 +49,7 @@ while 1:
 
 	blitRoom(data, screen)
 
-	blitPlayer(playerxy, [tanks[3], treads[0]], screen, t / 5, uu)
+	blitPlayer(playerxy, [tanks[0], treads[0]], screen, t / 5, uu)
 	
 	blitWater(waterData, screen, floor(t))
 	
