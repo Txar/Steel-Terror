@@ -29,9 +29,8 @@ while 1:
 	ee = event.get()
 	for e in ee:
 		if e.type == QUIT:
-			#quit()
-			#exit()
-			fps = 30
+			quit()
+			exit()
 		elif e.type == pygame.KEYDOWN and e.key == K_SPACE: spawnBullet(bullets, playerxy[0], playerxy[1], playerxy[2], playerBulletSpeed, fps)
 
 	keys = pygame.key.get_pressed()
@@ -66,6 +65,5 @@ while 1:
 	display.update()
 	t += deltaTime * 60
 	t %= 360
-
 
 	clock.tick(fps)
