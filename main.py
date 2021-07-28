@@ -1,4 +1,4 @@
-import pygame
+from pygame import *
 from pygame.locals import *
 from src.rendering import *
 from src.logic import *
@@ -22,11 +22,26 @@ tankStats = [0, [2.5, 4.5, 1.5, 0, 0], [3.7, 4.5, 2.7, 1, 0], [1.2, 5.5, 1.0, 2,
 biome = desert
 room = open("rooms/{0}.room".format(randint(0, 119)), "r")
 
+display.toggle_fullscreen()
+
 data, waterData, bushData, breakableData, wholeRoomData = renderRoom(room, biome)
 
 lastTicks = 0
 
-display.update()
+while 1:
+	ee = event.get()
+
+	aaaa = button(screen, mouse, size, 40, 40, 2, 2, "sprites/ui/button.9.png", "sprites/ui/buttonPressed.9.png", "sprites/ui/play.png")
+
+	for e in ee:
+		if e.type == QUIT:
+			quit()
+			exit()
+		if e.type == MOUSEBUTTONDOWN and aaaa:
+			print("no")
+
+	display.update()
+
 t = 0
 t2 = 0
 while 1:
@@ -37,10 +52,10 @@ while 1:
 		if e.type == QUIT:
 			quit()
 			exit()
-		elif e.type == pygame.KEYDOWN and e.key == K_SPACE and t2 > fps*playerShootCooldown/2:
+		elif e.type == KEYDOWN and e.key == K_SPACE and t2 > fps*playerShootCooldown/2:
 			t2 = 0
 			spawnBullet(bullets, playerxy[0], playerxy[1], playerxy[2], playerBulletSpeed, fps)
-	keys = pygame.key.get_pressed()
+	keys = key.get_pressed()
 	distanceToMove = playerSpeed/fps
 	uu = 0
 	if keys[K_a]: playerxy[2], uu = 1, 1
@@ -51,8 +66,6 @@ while 1:
 	playerxy = checkPlayerCollisions(playerxy, distanceToMove, wholeRoomData)
 	bullets = moveBullets(bullets)
 	bullets, wholeRoomData, breakableData = checkBulletCollisions(bullets, wholeRoomData, breakableData)
-
-	screen.blit(surfaceNinepatch("sprites/ui/button.9.png", 32, 16, size), (40, 40))
 
 	blitRoom(data, screen)
 

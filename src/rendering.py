@@ -24,6 +24,40 @@ def surfaceNinepatch(url, w, h, scale):
 
 	return surfaceImage(img)
 
+"""
+screen
+mouse
+size
+button x
+buttony
+text image offset x
+text image offset y
+button image url
+hovered button image url
+text image url
+action (lambda)
+"""
+def button(screen, m, size, x, y, ox, oy, burl, pburl, turl):
+	text = Image.open(turl)
+	ww, hh = text.size
+	mx, my = m.get_pos()
+
+	w = ox * 2 + ww
+	h = oy * 2 + hh
+	w
+	h
+
+	a = False
+	if mx >= x and mx <= x + w * size and my >= y and my <= y + h * size:
+		screen.blit(surfaceNinepatch(pburl, w, h, size), (x, y))
+		a = True
+	else:
+		screen.blit(surfaceNinepatch(burl, w, h, size), (x, y))
+
+	screen.blit(surfaceImage(text.resize((size * ww, size * hh), Image.NONE)), (x + size * ox, y + size * oy))
+
+	return a
+
 # a = value, ra = dimension, ts = tile size
 def calculateSize(a, ra, ts):
 	preValue = a
@@ -40,6 +74,7 @@ def calculateSize(a, ra, ts):
 	return m
 
 def applyMask(surface, colorMult, size):
+	newSurff = Surface(surface.size)
 	for i in range(size):
 		for j in range(size):
 			r1, g1, b1, a = surface.get_at((i, j))
@@ -52,8 +87,8 @@ def applyMask(surface, colorMult, size):
 				pix[0] = min(r1, 255)
 				pix[1] = min(g1, 255)
 				pix[2] = min(b1, 255)
-				surface.set_at((i, j), pix)
-	return surface
+				newSurf.set_at((i, j), pix)
+	return newSurf
 
 # Load the initial data, returns the screen and size scale
 def loadScreen(wd, hd):
