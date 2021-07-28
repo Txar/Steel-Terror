@@ -64,7 +64,6 @@ while 1:
 	if game:
 		playerSpeed, playerBulletSpeed, playerShootCooldown, tankSprite, tankTrackSprite = tankStats[int(tankStats[0])+1]
 		t2 += 1
-		ee = event.get()
 		for e in ee:
 			if e.type == QUIT:
 				quit()
