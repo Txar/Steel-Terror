@@ -5,14 +5,14 @@ from src.logic import *
 
 init()
 
-screen, size = loadScreen(20, 16)
+screen, size, scw, sch = loadScreen(20, 16)
 forest, desert, ice, dungeon, tanks, treads, bullet = loadImages()
 
 fps = 60
 clock = time.Clock()
 
 playerSpeed = 2.5
-playerBulletSpeed = 3.5
+playerBulletSpeed = 10
 playerxy = [0.5, 0.5, 0]
 health = 3
 ammo = 50
@@ -37,14 +37,17 @@ lastTicks = 0
 while 1:
 	ee = event.get()
 
-	aaaa = button(screen, mouse, size, 40, 40, 2, 2, "sprites/ui/button.9.png", "sprites/ui/buttonPressed.9.png", "sprites/ui/play.png")
+	play = button(screen, mouse, size, scw // 2, sch // 2 - 68, 2, 2, "sprites/ui/button.9.png", "sprites/ui/buttonPressed.9.png", "sprites/ui/play.png")
+	color = button(screen, mouse, size, scw // 2, sch // 2, 2, 2, "sprites/ui/button.9.png", "sprites/ui/buttonPressed.9.png", "sprites/ui/colors.png")
+	settings = button(screen, mouse, size, scw // 2, sch // 2 + 68, 2, 2, "sprites/ui/button.9.png", "sprites/ui/buttonPressed.9.png", "sprites/ui/settings.png")
 
 	u = 0
 	for e in ee:
 		if e.type == QUIT:
 			quit()
 			exit()
-		if e.type == MOUSEBUTTONDOWN and aaaa:
+		if e.type == MOUSEBUTTONDOWN and play:
+			screen.blit(Surface((scw, sch)), (0, 0))
 			u = 1
 
 	if u: break
@@ -52,6 +55,7 @@ while 1:
 
 t = 0
 t2 = 0
+deltaTime = 0
 while 1:
 	playerSpeed, playerBulletSpeed, playerShootCooldown, tankSprite, tankTrackSprite = tankStats[int(tankStats[0])+1]
 	t2 += 1
@@ -64,7 +68,7 @@ while 1:
 			t2 = 0
 			spawnBullet(bullets, playerxy[0], playerxy[1], playerxy[2], playerBulletSpeed, fps)
 	keys = key.get_pressed()
-	distanceToMove = playerSpeed/fps
+	distanceToMove = playerSpeed * deltaTime
 	uu = 0
 	if keys[K_a]: playerxy[2], uu = 1, 1
 	if keys[K_d] and not uu: playerxy[2], uu = 3, 1
@@ -76,11 +80,11 @@ while 1:
 	bullets, wholeRoomData, breakableData = checkBulletCollisions(bullets, wholeRoomData, breakableData)
 
 	blitRoom(data, screen)
+	blitWater(waterData, screen, floor(t))
 
 	blitPlayer(playerxy, [tanks[tankSprite], treads[tankTrackSprite]], screen, t / 5, uu)
 	blitEnemies(enemies, screen, t, tankStats, [tanks, treads])
-	blitWater(waterData, screen, floor(t))
-	
+
 	blitBullets(bullets, screen)# Bullet rendering goes here
 	
 	blitBreakBlock(breakableData, biome, screen)

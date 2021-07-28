@@ -44,17 +44,15 @@ def button(screen, m, size, x, y, ox, oy, burl, pburl, turl):
 
 	w = ox * 2 + ww
 	h = oy * 2 + hh
-	w
-	h
 
 	a = False
-	if mx >= x and mx <= x + w * size and my >= y and my <= y + h * size:
-		screen.blit(surfaceNinepatch(pburl, w, h, size), (x, y))
+	if mx >= x  - (w // 2) * size and mx <= x + w * size  - (w // 2) * size and my >= y - (h // 2) * size and my <= y + h * size - (h // 2) * size:
+		screen.blit(surfaceNinepatch(pburl, w, h, size), (x - (w // 2) * size, y - (h // 2) * size))
 		a = True
 	else:
-		screen.blit(surfaceNinepatch(burl, w, h, size), (x, y))
+		screen.blit(surfaceNinepatch(burl, w, h, size), (x - (w // 2) * size, y - (h // 2) * size))
 
-	screen.blit(surfaceImage(text.resize((size * ww, size * hh), Image.NONE)), (x + size * ox, y + size * oy))
+	screen.blit(surfaceImage(text.resize((size * ww, size * hh), Image.NONE)), (x + size * ox - (w // 2) * size, y + size * oy - (h // 2) * size))
 
 	return a
 
@@ -104,7 +102,7 @@ def loadScreen(wd, hd):
 	screen = display.set_mode((scw, sch), RESIZABLE)
 	centerPos = (scw // 2 - (size * w) // 2, sch // 2 -(size * h) // 2)
 
-	return screen, size // 8
+	return screen, size // 8, scw, sch
 
 # Load all image data
 def loadImages():
