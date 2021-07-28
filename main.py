@@ -3,12 +3,11 @@ from pygame import *
 from src.rendering import *
 from src.logic import *
 
+mixer.pre_init(44100, -16, 2, 1024)
+mixer.init()
+beep = mixer.Sound("sfx/hit.wav")
 init()
 
-# Oh boy globals
-global screen, size, scw, sch, forest, desert, ice, dungeon, tanks, treads, bullet, fps, clock
-global playerxy, health, ammo, player, bullets, enemies, tankStats
-global biome, room, data, waterData, bushData, breakableData, wholeRoomData
 screen, size, scw, sch = loadScreen(20, 16)
 forest, desert, ice, dungeon, tanks, treads, bullet = loadImages()
 
@@ -23,7 +22,7 @@ bullets = [] #[bullet x, bullet y, bullet direction, bullet distance to move]
 enemies = [] #[x, y, direction, tank type, distance to move, ticks since the last shot, how many times travel the "distance to move"]
 tankStats = [0, [2.5, 4.5, 1.5, 0, 0], [3.7, 4.5, 2.7, 1, 0], [1.2, 5.5, 1.0, 2, 1], [3.1, 5.5, 0.8, 3, 1]] #tank type used currently, [speed, bullet speed, shooting cooldown, sprite, tracks sprite]
 
-biome = dungeon
+biome = ice
 room = open("rooms/{0}.room".format(randint(0, 119)), "r")
 
 display.toggle_fullscreen()
@@ -33,10 +32,17 @@ spreadEnemy(enemies, wholeRoomData, 0)
 
 globals().update(locals())
 
-def menu():
-	while 1:
-		ee = event.get()
+menu = True
+game = False
+t = 0
+t2 = 0
+deltaTime = 0
+lastTicks = 0
 
+while 1:
+	ee = event.get()
+
+	if menu:
 		play = button(screen, mouse, size, scw // 2, sch // 2 - 15 * size, 2, 2, "sprites/ui/button.9.png", "sprites/ui/buttonPressed.9.png", "sprites/ui/play.png")
 		color = button(screen, mouse, size, scw // 2, sch // 2, 2, 2, "sprites/ui/button.9.png", "sprites/ui/buttonPressed.9.png", "sprites/ui/colors.png")
 		settings = button(screen, mouse, size, scw // 2, sch // 2 + 15 * size, 2, 2, "sprites/ui/button.9.png", "sprites/ui/buttonPressed.9.png", "sprites/ui/settings.png")
@@ -47,31 +53,15 @@ def menu():
 				quit()
 				exit()
 			if e.type == MOUSEBUTTONDOWN and play:
+				beep.play()
 				screen.blit(Surface((scw, sch)), (0, 0))
 				u = 1
 
 		if u:
-			# Workaround for code after return, pretty big brain
-			try:
-				return
-			finally:
-				playee()
+			menu = False
+			game = True
 
-		display.update()
-		clock.tick(fps)
-
-def playee():
-	# OMG im so sorry, but python has no gotos so this is the only way :(
-	global screen, size, scw, sch, forest, desert, ice, dungeon, tanks, treads, bullet, fps, clock
-	global playerxy, health, ammo, player, bullets, enemies, tankStats
-	global biome, room, data, waterData, bushData, breakableData, wholeRoomData
-
-	t = 0
-	t2 = 0
-	deltaTime = 0
-	lastTicks = 0
-
-	while 1:
+	if game:
 		playerSpeed, playerBulletSpeed, playerShootCooldown, tankSprite, tankTrackSprite = tankStats[int(tankStats[0])+1]
 		t2 += 1
 		ee = event.get()
@@ -95,13 +85,10 @@ def playee():
 		bullets = moveBullets(bullets)
 		bullets, wholeRoomData, breakableData = checkBulletCollisions(bullets, wholeRoomData, breakableData)
 		enemies, bullets = shootEnemies(enemies, bullets, wholeRoomData, tankStats, fps, playerxy)
-
 		blitRoom(data, screen)
 		blitWater(waterData, screen, floor(t))
-
 		blitPlayer(playerxy, [tanks[tankSprite], treads[tankTrackSprite]], screen, t / 5, uu)
 		blitEnemies(enemies, screen, t, tankStats, [tanks, treads])
-
 		blitBullets(bullets, screen)# Bullet rendering goes here
 		
 		blitBreakBlock(breakableData, biome, screen)
@@ -111,10 +98,8 @@ def playee():
 		deltaTime = (ti - lastTicks) / 1000
 		lastTicks = ti
 
-		display.update()
 		t += deltaTime * 60
 		t %= 360
 
-		clock.tick(fps)
-
-menu()
+	clock.tick(fps)
+	display.update()
