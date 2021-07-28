@@ -1,5 +1,5 @@
 # This file cannot be run directly, use main.py instead
-from PIL import Image
+from PIL import Image, ImageOps
 from math import *
 from pygame import *
 from random import *
@@ -39,6 +39,22 @@ def calculateSize(a, ra, ts):
 
 	return m
 
+def applyMask(surface, colorMult, size):
+	for i in range(size):
+		for j in range(size):
+			r1, g1, b1, a = surface.get_at((i, j))
+			pix = [0, 0, 0]
+			r, g, b = colorMult
+			if a != 0:
+				r1 *= r
+				g1 *= g
+				b1 *= b
+				pix[0] = min(r1, 255)
+				pix[1] = min(g1, 255)
+				pix[2] = min(b1, 255)
+				surface.set_at((i, j), pix)
+	return surface
+
 # Load the initial data, returns the screen and size scale
 def loadScreen(wd, hd):
 	global w, h, size, centerPos
@@ -66,6 +82,11 @@ def loadImages():
 	ice = []
 	dungeon = []
 
+	tanks = []
+	tankTypes = ["default", "fast", "strong", "epic"]
+
+	treads = []
+
 	for i in range(8):
 		water.append(surfaceImage(Image.open("tiles/water/water" + str(i) + ".png").resize((size, size), Image.NONE)))
 
@@ -75,10 +96,24 @@ def loadImages():
 		ice.append(surfaceImage(Image.open("tiles/ice/" + str(i) + ".png").resize((size, size), Image.NONE)))
 		dungeon.append(surfaceImage(Image.open("tiles/dungeon/" + str(i) + ".png").resize((size, size), Image.NONE)))
 
-	tanks = surfaceImage(Image.open("sprites/tanks.png").resize((size * 4, size * 8), Image.NONE))
-	bullet = surfaceImage(Image.open("sprites/bullet.png").resize((size, size), Image.NONE))
+	# up, right, down, left
+	ii = 0
+	for i in tankTypes:
+		tanks.append([])
+		tanks[ii].append(surfaceImage(Image.open("sprites/tanks/" + i + "/0.png").resize((size, size), Image.NONE)))
+		tanks[ii].append(surfaceImage(ImageOps.mirror(Image.open("sprites/tanks/" + i + "/1.png").resize((size, size), Image.NONE))))
+		tanks[ii].append(surfaceImage(ImageOps.flip(Image.open("sprites/tanks/" + i + "/0.png").resize((size, size), Image.NONE))))
+		tanks[ii].append(surfaceImage(Image.open("sprites/tanks/" + i + "/1.png").resize((size, size), Image.NONE)))
+		ii += 1
 
-	return forest, desert, ice, dungeon
+	for i in range(1, 3):
+		treads.append([])
+		for j in range(1, 3):
+			treads[i - 1].append(surfaceImage(Image.open("sprites/tanks/treads/tread" + str(i) + str(j) +".png").resize((size, size), Image.NONE)))
+
+	bullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((size, size), Image.NONE))
+
+	return forest, desert, ice, dungeon, tanks, treads, bullet
 
 
 # Returns the image data of a room, and the position data of layers
@@ -150,15 +185,21 @@ def blitBreakBlock(breakableData, biome, screen):
 	for i in breakableData:
 		screen.blit(biome[2], (centerPos[0] + size * i[0], centerPos[1] + size * i[1]))
 
-def blitPlayer(playerxy, tankType, screen, t):
-	global size, centerPos, tanks
-	#tank type 0 is the default one, 1 is the fast guy, 2 is the slow tanky tank, 3 is an epic unlocked at 100%
+def blitPlayer(playerxy, tp, screen, t, moving):
+	global size, centerPos
+
+	tankType = tp[0]
+	treadType = tp[1]
+
+	tt = 0
+	if moving: tt = int(t)
+
 	g = size/2
-	tank = Surface((size, size))
-	tank.blit(tanks, (0, 0), (tankType * size, size * playerxy[2] * 2, size, size))
-	#the mask is supposed to be applied to the "tank" surface
-	#and after, the tracks are supposed to be drawn
-	screen.blit(transform.rotate(tank, playerxy[2]*90), (centerPos[0] + size * playerxy[0] - g, centerPos[1] + size * playerxy[1] - g))
+	tank = Surface((size, size), SRCALPHA, 32)
+	tank.blit(transform.rotate(treadType[tt % 2], playerxy[2] * 90), (0, 0))
+	tank.blit(applyMask(tankType[playerxy[2]], [1, 1, 2], size), (0, 0))
+
+	screen.blit(tank, (centerPos[0] + size * playerxy[0] - g, centerPos[1] + size * playerxy[1] - g))
 
 def blitBullets(bullets, screen):
 	global bullet, size

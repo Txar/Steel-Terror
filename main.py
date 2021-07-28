@@ -6,7 +6,7 @@ from src.logic import *
 init()
 
 screen, size = loadScreen(20, 16)
-forest, desert, ice, dungeon = loadImages()
+forest, desert, ice, dungeon, tanks, treads, bullet = loadImages()
 
 fps = 60
 clock = time.Clock()
@@ -24,7 +24,6 @@ data, waterData, bushData, breakableData, wholeRoomData = renderRoom(room, biome
 display.update()
 t = 0
 while 1:
-	t %= 360
 	ee = event.get()
 	for e in ee:
 		if e.type == QUIT:
@@ -44,11 +43,11 @@ while 1:
 	bullets = moveBullets(bullets)
 	bullets, wholeRoomData, breakableData = checkBulletCollisions(bullets, wholeRoomData, breakableData)
 
-	screen.blit(surfaceNinepatch("sprites/button.9.png", 32, 16, size), (40, 40))
+	screen.blit(surfaceNinepatch("sprites/ui/button.9.png", 32, 16, size), (40, 40))
 
 	blitRoom(data, screen)
 
-	blitPlayer(playerxy, 0, screen, t)# Tank rendering goes here
+	blitPlayer(playerxy, [tanks[3], treads[0]], screen, t / 5, uu)
 	
 	blitWater(waterData, screen, floor(t))
 	
@@ -56,6 +55,8 @@ while 1:
 	
 	blitBreakBlock(breakableData, biome, screen)
 	blitBush(bushData, biome, screen)
+
 	display.update()
 	t += 1
+	t %= 360
 	clock.tick(fps)
