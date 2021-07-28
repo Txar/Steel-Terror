@@ -74,7 +74,7 @@ def calculateSize(a, ra, ts):
 	return m
 
 def applyMask(surface, colorMult, size):
-	newSurff = Surface(surface.size)
+	newSurf = Surface((size, size), SRCALPHA, 32)
 	for i in range(size):
 		for j in range(size):
 			r1, g1, b1, a = surface.get_at((i, j))
