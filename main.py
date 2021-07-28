@@ -20,7 +20,7 @@ playerBulletSpeed = 4.5
 playerShootCooldown = 1.5
 bullets = [] #[bullet x, bullet y, bullet direction, bullet distance to move]
 enemies = [] #[x, y, direction, tank type, distance to move, ticks since the last shot, how many times travel the "distance to move"]
-tankStats = [0, [2.5, 4.5, 1.5, 0, 0], [3.7, 4.5, 2.7, 1, 0], [1.2, 5.5, 1.0, 2, 1], [3.1, 5.5, 0.8, 2, 1]] #tank type used currently, [speed, bullet speed, shooting cooldown, sprite, tracks sprite]
+tankStats = [0, [2.5, 4.5, 1.5, 0, 0], [3.7, 4.5, 2.7, 1, 0], [1.2, 5.5, 1.0, 2, 1], [3.1, 5.5, 0.8, 3, 1]] #tank type used currently, [speed, bullet speed, shooting cooldown, sprite, tracks sprite]
 
 biome = forest
 room = open("rooms/{0}.room".format(randint(0, 119)), "r")
