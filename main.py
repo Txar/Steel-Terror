@@ -12,11 +12,9 @@ fps = 60
 clock = time.Clock()
 
 playerSpeed = 2.5
-playerBulletSpeed = 4.5
-playerShootCooldown = 1.5
+playerBulletSpeed = 3.5
 playerxy = [0.5, 0.5, 0]
 bullets = [] #[bullet x, bullet y, bullet direction, bullet distance to move]
-tankTypes = [3, [2.5, 4.5, 1.5, 0, 0], [3.7, 4.5, 2.7, 1, 0], [1.2, 5.5, 1.0, 2, 0], [3.1, 5.5, 0.8, 2, 0]] #tank type used currently, [speed, bullet speed, shooting cooldown, sprite, tracks sprite]
 
 biome = desert
 room = open("rooms/{0}.room".format(randint(0, 119)), "r")
@@ -27,18 +25,13 @@ lastTicks = 0
 
 display.update()
 t = 0
-t2 = 0
 while 1:
-	playerSpeed, playerBulletSpeed, playerShootCooldown, tankSprite, tankTrackSprite = tankTypes[int(tankTypes[0])+1]
-	t2 += 1
 	ee = event.get()
 	for e in ee:
 		if e.type == QUIT:
 			quit()
 			exit()
-		elif e.type == pygame.KEYDOWN and e.key == K_SPACE and t2 > fps*playerShootCooldown/2:
-			t2 = 0
-			spawnBullet(bullets, playerxy[0], playerxy[1], playerxy[2], playerBulletSpeed, fps)
+		elif e.type == pygame.KEYDOWN and e.key == K_SPACE: spawnBullet(bullets, playerxy[0], playerxy[1], playerxy[2], playerBulletSpeed, fps)
 
 	keys = pygame.key.get_pressed()
 	distanceToMove = playerSpeed/fps
@@ -56,7 +49,7 @@ while 1:
 
 	blitRoom(data, screen)
 
-	blitPlayer(playerxy, [tanks[tankSprite], treads[tankTrackSprite]], screen, t / 5, uu)
+	blitPlayer(playerxy, [tanks[3], treads[0]], screen, t / 5, uu)
 	
 	blitWater(waterData, screen, floor(t))
 	
