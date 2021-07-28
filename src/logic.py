@@ -107,7 +107,7 @@ def shootEnemies(enemies, bullets, wholeRoomData, tt, fps, playerxy):
 					if enemies[i][2] != 3:
 						if int(playerxy[0]) > int(enemies[i][0]):
 							enemies[i][2] = 3
-					elif enemies[i][2] != 1:
+					if enemies[i][2] != 1:
 						if int(playerxy[0]) < int(enemies[i][0]):
 							enemies[i][2] = 1
 					enemies[i][5] = 0
@@ -120,7 +120,7 @@ def shootEnemies(enemies, bullets, wholeRoomData, tt, fps, playerxy):
 					if enemies[i][2] != 2:
 						if int(playerxy[1]) > int(enemies[i][1]):
 							enemies[i][2] = 2
-					elif enemies[i][2] != 0:
+					if enemies[i][2] != 0:
 						if int(playerxy[1]) < int(enemies[i][1]):
 							enemies[i][2] = 0
 					enemies[i][5] = 0
