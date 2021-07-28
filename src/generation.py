@@ -186,5 +186,3 @@ def generateRooms(dir = "../rooms"):
 	f = open(dir + "/" + "0.water", "w+")
 
 	f.write(stringMap(generateRoom(water = True)))
-
-generateRooms()
