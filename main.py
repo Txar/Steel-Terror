@@ -21,14 +21,17 @@ room = open("rooms/{0}.room".format(randint(0, 119)), "r")
 
 data, waterData, bushData, breakableData, wholeRoomData = renderRoom(room, biome)
 
+lastTicks = 0
+
 display.update()
 t = 0
 while 1:
 	ee = event.get()
 	for e in ee:
 		if e.type == QUIT:
-			quit()
-			exit()
+			#quit()
+			#exit()
+			fps = 30
 		elif e.type == pygame.KEYDOWN and e.key == K_SPACE: spawnBullet(bullets, playerxy[0], playerxy[1], playerxy[2], playerBulletSpeed, fps)
 
 	keys = pygame.key.get_pressed()
@@ -56,7 +59,13 @@ while 1:
 	blitBreakBlock(breakableData, biome, screen)
 	blitBush(bushData, biome, screen)
 
+	ti = time.get_ticks()
+	deltaTime = (ti - lastTicks) / 1000
+	lastTicks = ti
+
 	display.update()
-	t += 1
+	t += deltaTime * 60
 	t %= 360
+
+
 	clock.tick(fps)
