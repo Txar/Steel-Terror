@@ -83,7 +83,6 @@ def spreadEnemy(enemies, wholeRoomData, tt):
 		if not a:
 			usedTile = usableTiles[g]
 			break
-	print(usedTile, "\n", wholeRoomData[usedTile[0]][usedTile[1]])
 	spawnEnemy(enemies, usedTile[1] + 0.5, usedTile[0] + 0.5, tt)
 
 def roundTo8(x, base = 8):
@@ -101,32 +100,35 @@ def shootEnemies(enemies, bullets, wholeRoomData, tt, fps, playerxy):
 
 	for i in range(0, len(enemies)):
 		enemies[i][5] += 1
-		if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2:
 
-				if int(playerxy[1]) == int(enemies[i][1]):
-					if enemies[i][2] != 3:
-						if int(playerxy[0]) > int(enemies[i][0]):
-							enemies[i][2] = 3
-					if enemies[i][2] != 1:
-						if int(playerxy[0]) < int(enemies[i][0]):
-							enemies[i][2] = 1
-					enemies[i][5] = 0
-					spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps)
-				elif "3" in wholeRoomData[int(enemies[i][1])]:
-					enemies[i][5] = 0
-					spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps)
+		if int(playerxy[1]) == int(enemies[i][1]):
+			if enemies[i][2] != 3:
+				if int(playerxy[0]) > int(enemies[i][0]):
+					enemies[i][2] = 3
+			if enemies[i][2] != 1:
+				if int(playerxy[0]) < int(enemies[i][0]):
+					enemies[i][2] = 1
+			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2:
+				enemies[i][5] = 0
+				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps)
 
-				if int(playerxy[0]) == int(enemies[i][0]):
-					if enemies[i][2] != 2:
-						if int(playerxy[1]) > int(enemies[i][1]):
-							enemies[i][2] = 2
-					if enemies[i][2] != 0:
-						if int(playerxy[1]) < int(enemies[i][1]):
-							enemies[i][2] = 0
-					enemies[i][5] = 0
-					spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps)
+		elif "3" in wholeRoomData[int(enemies[i][1])]:
+			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2:
+				enemies[i][5] = 0
+				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps)
+		if int(playerxy[0]) == int(enemies[i][0]):
+			if enemies[i][2] != 2:
+				if int(playerxy[1]) > int(enemies[i][1]):
+					enemies[i][2] = 2
+			if enemies[i][2] != 0:
+				if int(playerxy[1]) < int(enemies[i][1]):
+					enemies[i][2] = 0
+			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2:
+				enemies[i][5] = 0
+				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps)
 
-				elif h[int(enemies[i][0])]:
-					enemies[i][5] = 0
-					spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps)
+		elif h[int(enemies[i][0])]:
+			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2:
+				enemies[i][5] = 0
+				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps)
 	return enemies, bullets
