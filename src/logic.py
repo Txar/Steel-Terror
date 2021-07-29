@@ -102,12 +102,13 @@ def shootEnemies(enemies, bullets, wholeRoomData, tt, fps, playerxy):
 		enemies[i][5] += 1
 
 		if int(playerxy[1]) == int(enemies[i][1]):
-			if enemies[i][2] != 3:
-				if int(playerxy[0]) > int(enemies[i][0]):
-					enemies[i][2] = 3
-			if enemies[i][2] != 1:
-				if int(playerxy[0]) < int(enemies[i][0]):
-					enemies[i][2] = 1
+			if enemies[i][4] == 0:
+				if enemies[i][2] != 3:
+					if int(playerxy[0]) > int(enemies[i][0]):
+						enemies[i][2] = 3
+				if enemies[i][2] != 1:
+					if int(playerxy[0]) < int(enemies[i][0]):
+						enemies[i][2] = 1
 			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 30) == 0:
 				enemies[i][5] = 0
 				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps)
@@ -116,13 +117,15 @@ def shootEnemies(enemies, bullets, wholeRoomData, tt, fps, playerxy):
 			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 30) == 0:
 				enemies[i][5] = 0
 				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps)
+		
 		if int(playerxy[0]) == int(enemies[i][0]):
-			if enemies[i][2] != 2:
-				if int(playerxy[1]) > int(enemies[i][1]):
-					enemies[i][2] = 2
-			if enemies[i][2] != 0:
-				if int(playerxy[1]) < int(enemies[i][1]):
-					enemies[i][2] = 0
+			if enemies[i][4] == 0:
+				if enemies[i][2] != 2:
+					if int(playerxy[1]) > int(enemies[i][1]):
+						enemies[i][2] = 2
+				if enemies[i][2] != 0:
+					if int(playerxy[1]) < int(enemies[i][1]):
+						enemies[i][2] = 0
 			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 30) == 0:
 				enemies[i][5] = 0
 				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps)
@@ -132,3 +135,37 @@ def shootEnemies(enemies, bullets, wholeRoomData, tt, fps, playerxy):
 				enemies[i][5] = 0
 				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps)
 	return enemies, bullets
+
+def moveEnemies(enemies, wholeRoomData, fps, tankStats):
+	for i in range(0, len(enemies)):
+		if enemies[i][6] > 0:
+			x, y = enemies[i][0] - 0.5, enemies[i][1] - 0.5
+			if enemies[i][2] == 0:
+				if wholeRoomData[int(y - enemies[i][4])][int(x)] == "4" or wholeRoomData[int(y - enemies[i][4])][int(x)] == "1":
+					enemies[i][1] -= enemies[i][4]
+					enemies[i][6] -= 1
+					continue
+				
+			elif enemies[i][2] == 3:
+				if wholeRoomData[int(y)][int(x + enemies[i][4])] == "4" or wholeRoomData[int(y)][int(x + enemies[i][4])] == "1":
+					enemies[i][0] += enemies[i][4]
+					enemies[i][6] -= 1
+					continue
+				
+			elif enemies[i][2] == 2:
+				if wholeRoomData[int(y + enemies[i][4])][int(x)] == "4" or wholeRoomData[int(y + enemies[i][4])][int(x)] == "1":
+					enemies[i][1] += enemies[i][4]
+					enemies[i][6] -= 1
+					continue
+				
+			elif enemies[i][2] == 1:
+				if wholeRoomData[int(y)][int(x - enemies[i][4])] == "4" or wholeRoomData[int(y)][int(x - enemies[i][4])] == "1":
+					enemies[i][0] -= enemies[i][4]
+					enemies[i][6] -= 1
+					continue
+				
+			enemies[i][4], enemies[i][6] = 0, 0
+		elif randint(0, 50) == 0:
+			enemies[i][4] = tankStats[enemies[i][3]+1][0] / fps
+			enemies[i][6] = int(1 / enemies[i][4])
+		else: enemies[i][4] = 0

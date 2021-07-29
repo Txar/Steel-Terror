@@ -63,7 +63,7 @@ while 1:
 
 	if game:
 		playerSpeed, playerBulletSpeed, playerShootCooldown, tankSprite, tankTrackSprite = tankStats[int(tankStats[0])+1]
-		t2 += 1
+		if t2 < 999: t2 += 1
 		for e in ee:
 			if e.type == QUIT:
 				quit()
@@ -71,7 +71,7 @@ while 1:
 			elif e.type == KEYDOWN and e.key == K_SPACE and t2 > fps*playerShootCooldown/2:
 				t2 = 0
 				spawnBullet(bullets, playerxy[0], playerxy[1], playerxy[2], playerBulletSpeed, fps)
-				spreadEnemy(enemies, wholeRoomData, 3)
+			elif e.type == KEYDOWN and e.key == K_f: spreadEnemy(enemies, wholeRoomData, 3)
 		keys = key.get_pressed()
 		distanceToMove = playerSpeed * deltaTime
 		uu = 0
@@ -84,6 +84,7 @@ while 1:
 		bullets = moveBullets(bullets)
 		bullets, wholeRoomData, breakableData = checkBulletCollisions(bullets, wholeRoomData, breakableData)
 		enemies, bullets = shootEnemies(enemies, bullets, wholeRoomData, tankStats, fps, playerxy)
+		moveEnemies(enemies, wholeRoomData, fps, tankStats)
 		blitRoom(data, screen)
 		blitWater(waterData, screen, floor(t))
 		blitPlayer(playerxy, [tanks[tankSprite], treads[tankTrackSprite]], screen, t / 5, uu)
