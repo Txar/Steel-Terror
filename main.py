@@ -68,9 +68,10 @@ while 1:
 			if e.type == QUIT:
 				quit()
 				exit()
-			elif e.type == KEYDOWN and e.key == K_SPACE and t2 > fps*playerShootCooldown/2:
+			elif e.type == KEYDOWN and e.key == K_SPACE and t2 > fps*playerShootCooldown/2 and ammo > 0:
 				t2 = 0
 				spawnBullet(bullets, playerxy[0], playerxy[1], playerxy[2], playerBulletSpeed, fps)
+				ammo -= 1
 			elif e.type == KEYDOWN and e.key == K_f: spreadEnemy(enemies, wholeRoomData, 3)
 		keys = key.get_pressed()
 		distanceToMove = playerSpeed * deltaTime
