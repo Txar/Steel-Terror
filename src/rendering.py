@@ -267,7 +267,17 @@ def blitEnemies(enemies, screen, t, tankStats, tp):
 		screen.blit(enemy, (centerPos[0] + size * i[0] - g, centerPos[1] + size * i[1] - g))
 
 def blitBullets(bullets, screen):
-	global bullet, size
+	global bullet, size, centerPos
 	g = size/2
 	for i in bullets:
 		screen.blit(transform.rotate(bullet, i[2]*90), (centerPos[0] + size * i[0] - g, centerPos[1] + size * i[1] - g))
+
+def blitPacks(healthPacks, ammoPacks, screen):
+	global centerPos, size
+	heart = surfaceImage(Image.open("sprites/ui/heart.png").resize((size, size), Image.NONE))
+	bullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((size, size), Image.NONE))
+
+	for i in healthPacks:
+		screen.blit(heart, (centerPos[0] + i[0] * size, centerPos[1] + i[1] * size))
+	for i in ammoPacks:
+		screen.blit(bullet, (centerPos[0] + i[0] * size, centerPos[1] + i[1] * size))

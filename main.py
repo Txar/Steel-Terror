@@ -18,10 +18,12 @@ clock = time.Clock()
 playerSpeed = 2.5
 playerxy = [0.5, 0.5, 0]
 health = 3
+healthPacks = [] #[x, y]
+ammoPacks = [] #[x, y]
 ammo = 50
-bullets = [] #[bullet x, bullet y, bullet direction, bullet distance to move]
+bullets = [] #[bullet x, bullet y, bullet direction, bullet distance to move, 0 is player bullet 1 is enemy bullets]
 enemies = [] #[x, y, direction, tank type, distance to move, ticks since the last shot, how many times travel the "distance to move"]
-tankStats = [0, [2.5, 4.5, 1.5, 0, 0], [3.7, 4.5, 2.7, 1, 0], [1.2, 5.5, 1.0, 2, 1], [3.1, 5.5, 0.8, 3, 1]] #tank type used currently, [speed, bullet speed, shooting cooldown, sprite, tracks sprite]
+tankStats = [0, [2.5, 4.5, 2.0, 0, 0], [3.7, 4.5, 2.7, 1, 0], [1.2, 5.5, 1.0, 2, 1], [3.1, 5.5, 0.8, 3, 1]] #tank type used currently, [speed, bullet speed, shooting cooldown, sprite, tracks sprite]
 
 biome = ice
 room = open("rooms/{0}.room".format(randint(0, 119)), "r")
@@ -71,7 +73,7 @@ while 1:
 				exit()
 			elif e.type == KEYDOWN and e.key == K_SPACE and t2 > fps*playerShootCooldown/2 and ammo > 0:
 				t2 = 0
-				spawnBullet(bullets, playerxy[0], playerxy[1], playerxy[2], playerBulletSpeed, fps)
+				spawnBullet(bullets, playerxy[0], playerxy[1], playerxy[2], playerBulletSpeed, fps, 0)
 				ammo -= 1
 			elif e.type == KEYDOWN and e.key == K_f: spreadEnemy(enemies, wholeRoomData, 3)
 		keys = key.get_pressed()
@@ -84,15 +86,16 @@ while 1:
 		if not uu: distanceToMove = 0
 		playerxy = checkPlayerCollisions(playerxy, distanceToMove, wholeRoomData)
 		bullets = moveBullets(bullets)
-		bullets, wholeRoomData, breakableData = checkBulletCollisions(bullets, wholeRoomData, breakableData)
+		health, ammo, healthPacks, ammoPacks = pickupPacks(health, ammo, healthPacks, ammoPacks, playerxy)
+		bullets, wholeRoomData, breakableData, enemies, health, healthPacks, ammoPacks = checkBulletCollisions(bullets, wholeRoomData, breakableData, playerxy, enemies, health, healthPacks, ammoPacks)
 		enemies, bullets = shootEnemies(enemies, bullets, wholeRoomData, tankStats, fps, playerxy)
 		moveEnemies(enemies, wholeRoomData, fps, tankStats)
 		blitRoom(data, screen)
 		blitWater(waterData, screen, floor(t))
+		blitPacks(healthPacks, ammoPacks, screen)
 		blitPlayer(playerxy, [tanks[tankSprite], treads[tankTrackSprite]], screen, t / 5, uu)
 		blitEnemies(enemies, screen, t, tankStats, [tanks, treads])
-		blitBullets(bullets, screen)# Bullet rendering goes here
-		
+		blitBullets(bullets, screen)
 		blitBreakBlock(breakableData, biome, screen)
 		blitBush(bushData, biome, screen)
 

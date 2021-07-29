@@ -28,11 +28,6 @@ def checkPlayerCollisions(playerxy, distanceToMove, wholeRoomData):
 			if g == 1 or g == 4: playerxy[0] += distanceToMove
 	return playerxy
 
-#have fun bleaching your eyes after seeing this ^^
-
-
-#i did
-
 def moveBullets(bullets):
 	for i in range(0, len(bullets)):
 		direction, bulletDistanceToMove = bullets[i][2], bullets[i][3]
@@ -42,27 +37,51 @@ def moveBullets(bullets):
 		elif direction == 3: bullets[i][0] += bulletDistanceToMove
 	return bullets
 
-def spawnBullet(bullets, x, y, direction, bulletSpeed, fps):
-	if direction == 0: bullets.append([x, y - 0.51, direction, bulletSpeed/fps])
-	elif direction == 1: bullets.append([x - 0.51, y, direction, bulletSpeed/fps])
-	elif direction == 2: bullets.append([x, y + 0.51, direction, bulletSpeed/fps])
-	elif direction == 3: bullets.append([x + 0.51, y, direction, bulletSpeed/fps])
+def spawnBullet(bullets, x, y, direction, bulletSpeed, fps, eop):
+	if direction == 0: bullets.append([x, y - 0.51, direction, bulletSpeed/fps, eop])
+	elif direction == 1: bullets.append([x - 0.51, y, direction, bulletSpeed/fps, eop])
+	elif direction == 2: bullets.append([x, y + 0.51, direction, bulletSpeed/fps, eop])
+	elif direction == 3: bullets.append([x + 0.51, y, direction, bulletSpeed/fps, eop])
 	return bullets
 
-def checkBulletCollisions(bullets, wholeRoomData, breakableData):
-	bullets2 = []
+def checkBulletCollisions(bullets, wholeRoomData, breakableData, playerxy, enemies, health, healthPacks, ammoPacks):
+	bullets2, bullets3 = [], []
 	for i in range(0, len(bullets)):
 		x, y = int(bullets[i][0]), int(bullets[i][1])
 		if bullets[i][0] < 0.2 or bullets[i][0] > 19.8 or bullets[i][1] < 0.2 or bullets[i][1] > 15.8: continue
 		k = int(wholeRoomData[y][x])
 		
+		if bullets[i][4] == 0:
+			for j in range(0, len(enemies)):
+				if int(enemies[j][0]) == x and int(enemies[j][1]) == y:
+					enemies.pop(j)
+					k = 2
+					if randint(0, 9) == 0:
+						healthPacks.append([x + 0.5 + uniform(-0.2, 0.2), y + 0.5 + uniform(-0.2, 0.2)])
+					else:
+						for v in range(0, randint(0, 4)):
+							ammoPacks.append([x + 0.5 + uniform(-0.2, 0.2), y + 0.5 + uniform(-0.2, 0.2)])
+					break
+		elif bullets[i][4] == 1:
+			if int(playerxy[0]) == x and int(playerxy[1]) == y:
+				health -= 1
+				k = 2
+				break
+
 		if k == 3:
 			wholeRoomData[y][x] = 1
 			breakableData.pop(breakableData.index([x, y]))
 			continue
 		elif k == 2: continue
 		bullets2.append(bullets[i])
-	return bullets2, wholeRoomData, breakableData
+		bullets3.append(bullets[i])
+	for i in range(0, len(bullets2)):
+		for j in range(0, len(bullets2)):
+			if i == j: continue
+			if int(bullets2[i][1]) == int(bullets2[j][1]) and int(bullets2[i][0]) == int(bullets2[j][0]) and bullets2[i] in bullets3 and bullets2[j] in bullets3:
+				bullets3.pop(bullets3.index(bullets2[i]))
+				bullets3.pop(bullets3.index(bullets2[j]))
+	return bullets3, wholeRoomData, breakableData, enemies, health, healthPacks, ammoPacks
 
 def spawnEnemy(enemies, x, y, tt):
 	enemies.append([x, y, 1, tt, 0, 0, 0])
@@ -111,14 +130,14 @@ def shootEnemies(enemies, bullets, wholeRoomData, tt, fps, playerxy):
 				if enemies[i][2] != 1:
 					if int(playerxy[0]) < int(enemies[i][0]):
 						enemies[i][2] = 1
-			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 60) == 0:
+			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 30) == 0:
 				enemies[i][5] = 0
-				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps)
+				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps, 1)
 
 		elif "3" in wholeRoomData[int(enemies[i][1])]:
-			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 60) == 0:
+			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 90) == 0:
 				enemies[i][5] = 0
-				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps)
+				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps, 1)
 		
 		if int(playerxy[0]) == int(enemies[i][0]):
 			j = True
@@ -129,14 +148,14 @@ def shootEnemies(enemies, bullets, wholeRoomData, tt, fps, playerxy):
 				if enemies[i][2] != 0:
 					if int(playerxy[1]) < int(enemies[i][1]):
 						enemies[i][2] = 0
-			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 60) == 0:
+			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 30) == 0:
 				enemies[i][5] = 0
-				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps)
+				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps, 1)
 
 		elif h[int(enemies[i][0])]:
-			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 60) == 0:
+			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 90) == 0:
 				enemies[i][5] = 0
-				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps)
+				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps, 1)
 		if j == False and g == enemies[i][2] and enemies[i][4] == 0 and enemies[i][6] == 0 and randint(0, 120) == 0: enemies[i][2] = randint(0, 3)
 	return enemies, bullets
 
@@ -181,21 +200,35 @@ def moveEnemies(enemies, wholeRoomData, fps, tankStats):
 			l = False
 			if enemies[i][2] == 0:
 				if y - 1 >= 0:
-					if wholeRoomData[int(y - 1)][int(x)] == "4" or wholeRoomData[int(y - 1)][int(x)] == "1":
+					if wholeRoomData[int(y - 0.5)][int(x)] == "4" or wholeRoomData[int(y - 0.5)][int(x)] == "1":
 						l = True
 			elif enemies[i][2] == 3:
 				if x + 1 <= 19:
-					if wholeRoomData[int(y)][int(x + 1)] == "4" or wholeRoomData[int(y)][int(x + 1)] == "1":
+					if wholeRoomData[int(y)][int(x + 0.5)] == "4" or wholeRoomData[int(y)][int(x + 0.5)] == "1":
 						l = True
 			elif enemies[i][2] == 2:
 				if y + 1 <= 15:
-					if wholeRoomData[int(y + 1)][int(x)] == "4" or wholeRoomData[int(y + 1)] == "1":
+					if wholeRoomData[int(y + 0.5)][int(x)] == "4" or wholeRoomData[int(y + 0.5)] == "1":
 						l = True
 			elif enemies[i][2] == 1:
 				if x - 1 >= 0:
-					if wholeRoomData[int(y)][int(x - 1)] == "4" or wholeRoomData[int(y)][int(x - 1)] == "1":
+					if wholeRoomData[int(y)][int(x - 0.5)] == "4" or wholeRoomData[int(y)][int(x - 0.5)] == "1":
 						l = True
 			if l:
 				enemies[i][4] = tankStats[enemies[i][3]+1][0] / fps
 				enemies[i][6] = int(1 / enemies[i][4])
 		else: enemies[i][4] = 0
+
+def pickupPacks(health, ammo, healthPacks, ammoPacks, playerxy):
+	healthPacks2, ammoPacks2 = [], []
+	for i in range(0, len(healthPacks)):
+		if int(healthPacks[i][0]) == int(playerxy[0]) and int(healthPacks[i][1]) == int(playerxy[1]):
+			health += 1
+			continue
+		healthPacks2.append(healthPacks[i])
+	for i in range(0, len(ammoPacks)):
+		if int(ammoPacks[i][0]) == int(playerxy[0]) and int(ammoPacks[i][1]) == int(playerxy[1]):
+			ammo += 1
+			continue
+		ammoPacks2.append(ammoPacks[i])
+	return health, ammo, healthPacks2, ammoPacks2
