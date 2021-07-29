@@ -56,6 +56,25 @@ def button(screen, m, size, x, y, ox, oy, burl, pburl, turl):
 
 	return a
 
+def blitHealth(screen, health, size):
+	heart = surfaceImage(Image.open("sprites/ui/heart.png").resize((4 * size, 4 * size), Image.NONE))
+
+	x = 3 / 5
+	y = 0.2
+	for i in range(health):
+		screen.blit(heart, (int(x * size * 5), int(y * size * 5)))
+		x += 1
+		if x > 8:
+			x = 3 / 5
+			y += 1
+
+def blitAmmo(screen, ammo, size, x, y, f):
+	bullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((8 * size, 8 * size), Image.NONE))
+
+	screen.blit(bullet, (x, y))
+	textSurface = f.render("x" + str(ammo), False, (255, 255, 255))
+	screen.blit(textSurface, (x + 6 * size, y + 3 * size))
+
 # a = value, ra = dimension, ts = tile size
 def calculateSize(a, ra, ts):
 	preValue = a

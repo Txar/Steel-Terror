@@ -8,8 +8,10 @@ mixer.init()
 beep = mixer.Sound("sfx/hit.wav")
 init()
 
+
 screen, size, scw, sch = loadScreen(20, 16)
 forest, desert, ice, dungeon, tanks, treads, bullet = loadImages()
+ff = font.Font("fonts/font.ttf", size * 4)
 
 fps = 60
 clock = time.Clock()
@@ -94,6 +96,9 @@ while 1:
 		
 		blitBreakBlock(breakableData, biome, screen)
 		blitBush(bushData, biome, screen)
+
+		blitHealth(screen, health, size)
+		blitAmmo(screen, ammo, size, scw - 120, 5, ff)
 
 		ti = time.get_ticks()
 		deltaTime = (ti - lastTicks) / 1000
