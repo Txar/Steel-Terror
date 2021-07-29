@@ -274,7 +274,7 @@ def blitBullets(bullets, screen):
 
 def blitPacks(healthPacks, ammoPacks, screen):
 	global centerPos, size
-	heart = surfaceImage(Image.open("sprites/ui/heart.png").resize((size, size), Image.NONE))
+	heart = surfaceImage(Image.open("sprites/ui/heart.png").resize((int(size / 2), int(size / 2)), Image.NONE))
 	bullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((size, size), Image.NONE))
 
 	for i in healthPacks:

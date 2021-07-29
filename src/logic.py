@@ -59,7 +59,7 @@ def checkBulletCollisions(bullets, wholeRoomData, breakableData, playerxy, enemi
 					if randint(0, 9) == 0:
 						healthPacks.append([x + 0.5 + uniform(-0.2, 0.2), y + 0.5 + uniform(-0.2, 0.2)])
 					else:
-						for v in range(0, randint(0, 4)):
+						for v in range(0, randint(0, 20)):
 							ammoPacks.append([x + 0.5 + uniform(-0.2, 0.2), y + 0.5 + uniform(-0.2, 0.2)])
 					break
 		elif bullets[i][4] == 1:
