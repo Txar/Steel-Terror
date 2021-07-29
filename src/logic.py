@@ -101,7 +101,9 @@ def shootEnemies(enemies, bullets, wholeRoomData, tt, fps, playerxy):
 	for i in range(0, len(enemies)):
 		enemies[i][5] += 1
 		g = enemies[i][2]
+		j = False
 		if int(playerxy[1]) == int(enemies[i][1]):
+			j = True
 			if enemies[i][6] == 0 and enemies[i][4] == 0:
 				if enemies[i][2] != 3:
 					if int(playerxy[0]) > int(enemies[i][0]):
@@ -109,16 +111,17 @@ def shootEnemies(enemies, bullets, wholeRoomData, tt, fps, playerxy):
 				if enemies[i][2] != 1:
 					if int(playerxy[0]) < int(enemies[i][0]):
 						enemies[i][2] = 1
-			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 30) == 0:
+			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 60) == 0:
 				enemies[i][5] = 0
 				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps)
 
 		elif "3" in wholeRoomData[int(enemies[i][1])]:
-			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 30) == 0:
+			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 60) == 0:
 				enemies[i][5] = 0
 				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps)
 		
 		if int(playerxy[0]) == int(enemies[i][0]):
+			j = True
 			if enemies[i][6] == 0 and enemies[i][4] == 0:
 				if enemies[i][2] != 2:
 					if int(playerxy[1]) > int(enemies[i][1]):
@@ -126,21 +129,21 @@ def shootEnemies(enemies, bullets, wholeRoomData, tt, fps, playerxy):
 				if enemies[i][2] != 0:
 					if int(playerxy[1]) < int(enemies[i][1]):
 						enemies[i][2] = 0
-			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 30) == 0:
+			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 60) == 0:
 				enemies[i][5] = 0
 				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps)
 
 		elif h[int(enemies[i][0])]:
-			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 30) == 0:
+			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 60) == 0:
 				enemies[i][5] = 0
 				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps)
-		if g == enemies[i][2] and enemies[i][4] == 0 and enemies[i][6] == 0 and randint(0, 120) == 0: enemies[i][2] = randint(0, 3)
+		if j == False and g == enemies[i][2] and enemies[i][4] == 0 and enemies[i][6] == 0 and randint(0, 120) == 0: enemies[i][2] = randint(0, 3)
 	return enemies, bullets
 
 def moveEnemies(enemies, wholeRoomData, fps, tankStats):
 	for i in range(0, len(enemies)):
+		x, y = enemies[i][0] - 0.5, enemies[i][1] - 0.5
 		if enemies[i][6] > 0:
-			x, y = enemies[i][0] - 0.5, enemies[i][1] - 0.5
 			if enemies[i][2] == 0:
 				if y - enemies[i][4] < 0: pass
 				elif wholeRoomData[int(y - enemies[i][4])][int(x)] == "4" or wholeRoomData[int(y - enemies[i][4])][int(x)] == "1":
@@ -172,7 +175,27 @@ def moveEnemies(enemies, wholeRoomData, fps, tankStats):
 			enemies[i][0] = int(enemies[i][0]) + 0.5
 			enemies[i][1] = int(enemies[i][1]) + 0.5
 			enemies[i][4], enemies[i][6] = 0, 0
-		elif randint(0, 50) == 0:
-			enemies[i][4] = tankStats[enemies[i][3]+1][0] / fps
-			enemies[i][6] = int(1 / enemies[i][4])
+		elif randint(0, 60) == 0:
+			enemies[i][0] = int(enemies[i][0]) + 0.5
+			enemies[i][1] = int(enemies[i][1]) + 0.5
+			l = False
+			if enemies[i][2] == 0:
+				if y - 1 >= 0:
+					if wholeRoomData[int(y - 1)][int(x)] == "4" or wholeRoomData[int(y - 1)][int(x)] == "1":
+						l = True
+			elif enemies[i][2] == 3:
+				if x + 1 <= 19:
+					if wholeRoomData[int(y)][int(x + 1)] == "4" or wholeRoomData[int(y)][int(x + 1)] == "1":
+						l = True
+			elif enemies[i][2] == 2:
+				if y + 1 <= 15:
+					if wholeRoomData[int(y + 1)][int(x)] == "4" or wholeRoomData[int(y + 1)] == "1":
+						l = True
+			elif enemies[i][2] == 1:
+				if x - 1 >= 0:
+					if wholeRoomData[int(y)][int(x - 1)] == "4" or wholeRoomData[int(y)][int(x - 1)] == "1":
+						l = True
+			if l:
+				enemies[i][4] = tankStats[enemies[i][3]+1][0] / fps
+				enemies[i][6] = int(1 / enemies[i][4])
 		else: enemies[i][4] = 0
