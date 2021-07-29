@@ -263,7 +263,6 @@ def blitEnemies(enemies, screen, t, tankStats, tp):
 		if i[4] > 0: tt = int(t)
 		enemy = Surface((size, size), SRCALPHA, 32)
 		enemy.blit(transform.rotate(treads[tankStats[i[3] + 1][4]][tt % 2], i[2] * 90), (0, 0))
-		enemy.blit(transform.rotate(tanks[i[3]][i[2]], i[2] * 90), (0, 0))
 		enemy.blit(tanks[i[3]][i[2]], (0, 0))
 		screen.blit(enemy, (centerPos[0] + size * i[0] - g, centerPos[1] + size * i[1] - g))
 

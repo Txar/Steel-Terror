@@ -8,7 +8,6 @@ mixer.init()
 beep = mixer.Sound("sfx/hit.wav")
 init()
 
-
 screen, size, scw, sch = loadScreen(20, 16)
 forest, desert, ice, dungeon, tanks, treads, bullet = loadImages()
 ff = font.Font("fonts/font.ttf", size * 4)
