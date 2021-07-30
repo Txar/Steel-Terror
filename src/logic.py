@@ -6,33 +6,49 @@ def checkPlayerCollisions(playerxy, distanceToMove, wholeRoomData, enemies):
 	for i in range(0, len(enemies)):
 		enemies2.append([int(enemies[i][0] - 0.5), int(enemies[i][1] - 0.5)])
 	if playerxy[2] == 0:
-		if int(playerxy[1] - distanceToMove - 0.455 + 1) < 0.2: return playerxy
-		y = int(playerxy[1] - distanceToMove - 0.455)
-		k = int(wholeRoomData[y][int(playerxy[0] + 0.455)])
-		g = int(wholeRoomData[y][int(playerxy[0] - 0.455)])
-		if [int(playerxy[0] + 0.455), y] not in enemies2 and [y, int(playerxy[0] - 0.455)] not in enemies2 and (k == 1 or k == 4):
+		if int(playerxy[1] - distanceToMove - 0.47 + 1) < 0.2: return playerxy
+		y = int(playerxy[1] - distanceToMove - 0.47)
+		k = int(wholeRoomData[y][int(playerxy[0] + 0.47)])
+		g = int(wholeRoomData[y][int(playerxy[0] - 0.47)])
+		try: c = int(wholeRoomData[int(playerxy[1] - 1)][int(playerxy[0])])
+		except: c = 2
+		if [int(playerxy[0] + 0.47), y] not in enemies2 and [y, int(playerxy[0] - 0.47)] not in enemies2 and (k == 1 or k == 4):
 			if g == 1 or g == 4: playerxy[1] -= distanceToMove
+			elif int(playerxy[0] - 0.47) < floor(playerxy[0]) and (c == 1 or c == 4): playerxy[0] += 0.025
+		elif int(playerxy[0] + 0.47) > floor(playerxy[0]) and (c == 1 or c == 4): playerxy[0] -= 0.025
 	elif playerxy[2] == 2:
-		if int(playerxy[1] + distanceToMove + 0.455) > 15.8: return playerxy
-		y = int(playerxy[1] + distanceToMove + 0.455)
-		k = int(wholeRoomData[y][int(playerxy[0] + 0.455)])
-		g = int(wholeRoomData[y][int(playerxy[0] - 0.455)])
-		if [int(playerxy[0] - 455), y] not in enemies2 and [int(playerxy[0] + 0.455), y] not in enemies2 and (k == 1 or k == 4):
+		if int(playerxy[1] + distanceToMove + 0.47) > 15.8: return playerxy
+		y = int(playerxy[1] + distanceToMove + 0.47)
+		k = int(wholeRoomData[y][int(playerxy[0] + 0.47)])
+		g = int(wholeRoomData[y][int(playerxy[0] - 0.47)])
+		try: c = int(wholeRoomData[int(playerxy[1] + 1)][int(playerxy[0])])
+		except: c = 2
+		if [int(playerxy[0] - 0.47), y] not in enemies2 and [int(playerxy[0] + 0.47), y] not in enemies2 and (k == 1 or k == 4):
 			if g == 1 or g == 4: playerxy[1] += distanceToMove
+			elif int(playerxy[0] - 0.47) < floor(playerxy[0]) and (c == 1 or c == 4): playerxy[0] += 0.025
+		elif int(playerxy[0] + 0.47) > floor(playerxy[0]) and (c == 1 or c == 4): playerxy[0] -= 0.025
 	elif playerxy[2] == 1:
-		if int(playerxy[0] - distanceToMove - 0.455 + 1) < 0.2: return playerxy
-		x = int(playerxy[0] - distanceToMove - 0.455)
-		k = int(wholeRoomData[int(playerxy[1] + 0.455)][x])
-		g = int(wholeRoomData[int(playerxy[1] - 0.455)][x])
-		if [x, int(playerxy[1] + 0.455)] not in enemies2 and [x, int(playerxy[1] - 0.455)] not in enemies2 and (k == 1 or k == 4):
+		if int(playerxy[0] - distanceToMove - 0.47 + 1) < 0.2: return playerxy
+		x = int(playerxy[0] - distanceToMove - 0.47)
+		k = int(wholeRoomData[int(playerxy[1] + 0.47)][x])
+		g = int(wholeRoomData[int(playerxy[1] - 0.47)][x])
+		try: c = int(wholeRoomData[int(playerxy[1])][int(playerxy[0] - 1)])
+		except: c = 2
+		if [x, int(playerxy[1] + 0.47)] not in enemies2 and [x, int(playerxy[1] - 0.47)] not in enemies2 and (k == 1 or k == 4):
 			if g == 1 or g == 4: playerxy[0] -= distanceToMove
+			elif int(playerxy[1] - 0.47) < floor(playerxy[1]) and (c == 1 or c == 4): playerxy[1] += 0.025
+		elif int(playerxy[1] + 0.47) > floor(playerxy[1]) and (c == 1 or c == 4): playerxy[1] -= 0.025
 	elif playerxy[2] == 3:
-		if int(playerxy[0] + distanceToMove + 0.455) > 19.8: return playerxy
-		x = int(playerxy[0] + distanceToMove + 0.455)
-		k = int(wholeRoomData[int(playerxy[1] + 0.455)][x])
-		g = int(wholeRoomData[int(playerxy[1] - 0.455)][x])
-		if [x, int(playerxy[1] + 0.455)] not in enemies2 and [x, int(playerxy[1] - 0.455)] not in enemies2 and (k == 1 or k == 4):
+		if int(playerxy[0] + distanceToMove + 0.47) > 19.8: return playerxy
+		x = int(playerxy[0] + distanceToMove + 0.47)
+		k = int(wholeRoomData[int(playerxy[1] + 0.47)][x])
+		g = int(wholeRoomData[int(playerxy[1] - 0.47)][x])
+		try: c = int(wholeRoomData[int(playerxy[1])][int(playerxy[0] + 1)])
+		except: c = 2
+		if [x, int(playerxy[1] + 0.47)] not in enemies2 and [x, int(playerxy[1] - 0.47)] not in enemies2 and (k == 1 or k == 4):
 			if g == 1 or g == 4: playerxy[0] += distanceToMove
+			elif int(playerxy[1] - 0.47) < floor(playerxy[1]) and (c == 1 or c == 4): playerxy[1] += 0.025
+		elif int(playerxy[1] + 0.47) > floor(playerxy[1]) and (c == 1 or c == 4): playerxy[1] -= 0.025
 	return playerxy
 
 def moveBullets(bullets):
