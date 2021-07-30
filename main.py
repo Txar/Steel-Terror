@@ -92,12 +92,12 @@ while 1:
 		moveEnemies(enemies, wholeRoomData, fps, tankStats, playerxy)
 		blitRoom(data, screen)
 		blitWater(waterData, screen, floor(t))
+		blitPacks(healthPacks, ammoPacks, screen)
 		blitPlayer(playerxy, [tanks[tankSprite], treads[tankTrackSprite]], screen, t / 5, uu)
 		blitEnemies(enemies, screen, t, tankStats, [enemyTanks, treads])
 		blitBullets(bullets, screen)
 		blitBreakBlock(breakableData, biome, screen)
 		blitBush(bushData, biome, screen)
-		blitPacks(healthPacks, ammoPacks, screen)
 
 		blitHealth(screen, health, size)
 		blitAmmo(screen, ammo, size, scw - 120, 5, ff)
