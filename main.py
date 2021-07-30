@@ -25,6 +25,8 @@ ammoPacks = [] #[x, y]
 ammo = 50
 bullets = [] #[bullet x, bullet y, bullet direction, bullet distance to move, 0 is player bullet 1 is enemy bullets]
 enemies = [] #[x, y, direction, tank type, distance to move, ticks since the last shot, how many times travel the "distance to move"]
+enemiesToAdd = []#[type, if boss]
+spawnCooldown = 120
 
 tankStats = [0, [2.5, 4.5, 2.0, 0, 0], [3.7, 6.5, 2.7, 1, 0], [1.2, 5.5, 1.0, 2, 1], [3.1, 5.5, 0.8, 3, 1]] #tank type used currently, [speed, bullet speed, shooting cooldown, sprite, tracks sprite]
 
@@ -62,7 +64,7 @@ display.toggle_fullscreen()
 mapPos = [6, 6]
 
 data, waterData, bushData, blockData, breakableData, wholeRoomData, biome = mapMap[mapPos[0]][mapPos[1]]
-spreadEnemy(enemies, wholeRoomData, 0, playerxy)
+enemiesToAdd = addEnemies(1)
 
 globals().update(locals())
 
@@ -126,6 +128,12 @@ while 1:
 		bullets, wholeRoomData, breakableData, enemies, health, healthPacks, ammoPacks = checkBulletCollisions(bullets, wholeRoomData, breakableData, playerxy, enemies, health, healthPacks, ammoPacks)
 		enemies, bullets = shootEnemies(enemies, bullets, wholeRoomData, tankStats, fps, playerxy)
 		moveEnemies(enemies, wholeRoomData, fps, tankStats, playerxy)
+		if spawnCooldown == 0:
+			spawnCooldown = randint(120, 720)
+			h = randint(0, len(enemiesToAdd))
+			spreadEnemy(enemies, wholeRoomData, enemiesToAdd[h][0], playerxy)
+			enemiesToAdd.pop(h)
+		else: spawnCooldown -= 1
 
 		for i in range(-1, 2):
 			for j in range(-1, 2):

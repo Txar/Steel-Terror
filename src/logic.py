@@ -82,7 +82,7 @@ def checkBulletCollisions(bullets, wholeRoomData, breakableData, playerxy, enemi
 					if randint(0, 9) == 0:
 						healthPacks.append([x + 0.5 + uniform(-0.2, 0.2), y + 0.5 + uniform(-0.2, 0.2)])
 					else:
-						for v in range(0, randint(0, 12)):
+						for v in range(0, randint(0, 15)):
 							ammoPacks.append([x + 0.5 + uniform(-0.2, 0.2), y + 0.5 + uniform(-0.2, 0.2)])
 					break
 		elif bullets[i][4] == 1:
@@ -129,6 +129,7 @@ def spreadEnemy(enemies, wholeRoomData, tt, playerxy):
 			usedTile = usableTiles[g]
 			break
 	if ticksi < 360: spawnEnemy(enemies, usedTile[1] + 0.5, usedTile[0] + 0.5, tt)
+	else: print("e")
 
 def roundTo8(x, base = 8):
 	return int(base * math.ceil(float(x) / base) - 8)
@@ -275,3 +276,31 @@ def movePet(petxy, playerxy):
 		petxy[1] += 0.025
 	elif playerxy[1] - 2 < petxy[1] and petxy[1] - playerxy[1] - 2 > 0.025:
 		petxy[1] -= 0.025
+
+def addEnemies(difficulty):
+	enemiesToAdd = []
+	if difficulty == 1:
+		for i in range(0, randint(7, 15)): enemiesToAdd.append([0, False])
+		for i in range(0, randint(0, 3)): enemiesToAdd.append([1, False])
+	elif difficulty == 2:
+		for i in range(0, randint(10, 20)): enemiesToAdd.append([0, False])
+		for i in range(0, randint(5, 10)): enemiesToAdd.append([1, False])
+		for i in range(0, randint(0, 3)): enemiesToAdd.append([2, False])
+	elif difficulty == 3:
+		for i in range(0, randint(15, 25)): enemiesToAdd.append([0, False])
+		for i in range(0, randint(10, 20)): enemiesToAdd.append([1, False])
+		for i in range(0, randint(5, 10)): enemiesToAdd.append([2, False])
+	elif difficulty == 4:
+		for i in range(0, randint(15, 30)): enemiesToAdd.append([0, False])
+		for i in range(0, randint(10, 25)): enemiesToAdd.append([1, False])
+		for i in range(0, randint(10, 20)): enemiesToAdd.append([2, False])
+	elif difficulty == 5 or difficulty == 6 or difficulty == 7:
+		for i in range(0, randint(15, 30)): enemiesToAdd.append([0, False])
+		for i in range(0, randint(10, 25)): enemiesToAdd.append([1, False])
+		for i in range(0, randint(10, 30)): enemiesToAdd.append([2, False])
+		enemiesToAdd.append([3, True])
+	if difficulty == 6 or difficulty == 7:
+		for i in range(0, randint(0, 1)): enemiesToAdd.append([3, True])
+	if difficulty == 7:
+		for i in range(0, randint(0, 1)): enemiesToAdd.append([3, True])
+	return enemiesToAdd
