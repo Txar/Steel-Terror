@@ -22,7 +22,7 @@ petxy = [0, 0, "duck"]
 health = 3
 healthPacks = [] #[x, y]
 ammoPacks = [] #[x, y]
-ammo = 50
+ammo = 20
 bullets = [] #[bullet x, bullet y, bullet direction, bullet distance to move, 0 is player bullet 1 is enemy bullets]
 enemies = [] #[x, y, direction, tank type, distance to move, ticks since the last shot, how many times travel the "distance to move"]
 
@@ -141,7 +141,7 @@ while 1:
 
 
 		blitHealth(screen, health, size)
-		blitAmmo(screen, ammo, size, scw - 120, size, ff)
+		blitAmmo(screen, ammo, size, scw - 20 * size, size, ff)
 
 		ti = time.get_ticks()
 		deltaTime = (ti - lastTicks) / 1000

@@ -70,7 +70,7 @@ def blitHealth(screen, health, size):
 
 def blitAmmo(screen, ammo, size, x, y, f):
 	bullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((8 * size, 8 * size), Image.NONE))
-	buttSurface = surfaceNinepatch("sprites/ui/colorButton.9.png", 10 + len(str(ammo)) * size // 2, int(size * 1.7), size)
+	buttSurface = surfaceNinepatch("sprites/ui/colorButton.9.png", 10 + int(len(str(ammo)) * 2), 9, size)
 	textSurface = f.render("x" + str(ammo), False, (0, 0, 0))
 
 	screen.blit(buttSurface, (x + size, y))
