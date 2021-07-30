@@ -1,30 +1,37 @@
 from random import *
 from math import *
 
-def checkPlayerCollisions(playerxy, distanceToMove, wholeRoomData):
+def checkPlayerCollisions(playerxy, distanceToMove, wholeRoomData, enemies):
+	enemies2 = []
+	for i in range(0, len(enemies)):
+		enemies2.append([int(enemies[i][0] - 0.5), int(enemies[i][1] - 0.5)])
 	if playerxy[2] == 0:
 		if int(playerxy[1] - distanceToMove - 0.455 + 1) < 0.2: return playerxy
-		k = int(wholeRoomData[int(playerxy[1] - distanceToMove - 0.455)][int(playerxy[0] + 0.455)])
-		g = int(wholeRoomData[int(playerxy[1] - distanceToMove - 0.455)][int(playerxy[0] - 0.455)])
-		if k == 1 or k == 4:
+		y = int(playerxy[1] - distanceToMove - 0.455)
+		k = int(wholeRoomData[y][int(playerxy[0] + 0.455)])
+		g = int(wholeRoomData[y][int(playerxy[0] - 0.455)])
+		if [int(playerxy[0] + 0.455), y] not in enemies2 and [y, int(playerxy[0] - 0.455)] not in enemies2 and (k == 1 or k == 4):
 			if g == 1 or g == 4: playerxy[1] -= distanceToMove
 	elif playerxy[2] == 2:
 		if int(playerxy[1] + distanceToMove + 0.455) > 15.8: return playerxy
-		k = int(wholeRoomData[int(playerxy[1] + distanceToMove + 0.455)][int(playerxy[0] + 0.45)])
-		g = int(wholeRoomData[int(playerxy[1] + distanceToMove + 0.455)][int(playerxy[0] - 0.455)])
-		if k == 1 or k == 4:
+		y = int(playerxy[1] + distanceToMove + 0.455)
+		k = int(wholeRoomData[y][int(playerxy[0] + 0.455)])
+		g = int(wholeRoomData[y][int(playerxy[0] - 0.455)])
+		if [int(playerxy[0] - 455), y] not in enemies2 and [int(playerxy[0] + 0.455), y] not in enemies2 and (k == 1 or k == 4):
 			if g == 1 or g == 4: playerxy[1] += distanceToMove
 	elif playerxy[2] == 1:
 		if int(playerxy[0] - distanceToMove - 0.455 + 1) < 0.2: return playerxy
-		k = int(wholeRoomData[int(playerxy[1] + 0.455)][int(playerxy[0] - distanceToMove - 0.455)])
-		g = int(wholeRoomData[int(playerxy[1] - 0.455)][int(playerxy[0] - distanceToMove - 0.455)])
-		if k == 1 or k == 4:
+		x = int(playerxy[0] - distanceToMove - 0.455)
+		k = int(wholeRoomData[int(playerxy[1] + 0.455)][x])
+		g = int(wholeRoomData[int(playerxy[1] - 0.455)][x])
+		if [x, int(playerxy[1] + 0.455)] not in enemies2 and [x, int(playerxy[1] - 0.455)] not in enemies2 and (k == 1 or k == 4):
 			if g == 1 or g == 4: playerxy[0] -= distanceToMove
 	elif playerxy[2] == 3:
 		if int(playerxy[0] + distanceToMove + 0.455) > 19.8: return playerxy
-		k = int(wholeRoomData[int(playerxy[1] + 0.455)][int(playerxy[0] + distanceToMove + 0.455)])
-		g = int(wholeRoomData[int(playerxy[1] - 0.455)][int(playerxy[0] + distanceToMove + 0.455)])
-		if k == 1 or k == 4:
+		x = int(playerxy[0] + distanceToMove + 0.455)
+		k = int(wholeRoomData[int(playerxy[1] + 0.455)][x])
+		g = int(wholeRoomData[int(playerxy[1] - 0.455)][x])
+		if [x, int(playerxy[1] + 0.455)] not in enemies2 and [x, int(playerxy[1] - 0.455)] not in enemies2 and (k == 1 or k == 4):
 			if g == 1 or g == 4: playerxy[0] += distanceToMove
 	return playerxy
 
@@ -159,12 +166,13 @@ def shootEnemies(enemies, bullets, wholeRoomData, tt, fps, playerxy):
 		if j == False and g == enemies[i][2] and enemies[i][4] == 0 and enemies[i][6] == 0 and randint(0, 120) == 0: enemies[i][2] = randint(0, 3)
 	return enemies, bullets
 
-def moveEnemies(enemies, wholeRoomData, fps, tankStats):
+def moveEnemies(enemies, wholeRoomData, fps, tankStats, playerxy):
 	for i in range(0, len(enemies)):
 		x, y = enemies[i][0] - 0.5, enemies[i][1] - 0.5
 		if enemies[i][6] > 0:
 			if enemies[i][2] == 0:
 				if y - enemies[i][4] < 0: pass
+				elif int(playerxy[0]) == int(x) and int(playerxy[1]) == int(y - enemies[i][4]): pass
 				elif wholeRoomData[int(y - enemies[i][4])][int(x)] == "4" or wholeRoomData[int(y - enemies[i][4])][int(x)] == "1":
 					enemies[i][1] -= enemies[i][4]
 					enemies[i][6] -= 1
@@ -172,6 +180,7 @@ def moveEnemies(enemies, wholeRoomData, fps, tankStats):
 				
 			elif enemies[i][2] == 3:
 				if x + enemies[i][4] > 19: pass
+				elif int(playerxy[0]) == int(x + enemies[i][4]) and int(playerxy[1]) == int(y): pass
 				elif wholeRoomData[int(y)][int(x + enemies[i][4])] == "4" or wholeRoomData[int(y)][int(x + enemies[i][4])] == "1":
 					enemies[i][0] += enemies[i][4]
 					enemies[i][6] -= 1
@@ -179,6 +188,7 @@ def moveEnemies(enemies, wholeRoomData, fps, tankStats):
 				
 			elif enemies[i][2] == 2:
 				if y + enemies[i][4] > 15: pass
+				elif int(playerxy[0]) == int(x) and int(playerxy[1]) == int(y + enemies[i][4]): pass
 				elif wholeRoomData[int(y + enemies[i][4])][int(x)] == "4" or wholeRoomData[int(y + enemies[i][4])][int(x)] == "1":
 					enemies[i][1] += enemies[i][4]
 					enemies[i][6] -= 1
@@ -186,6 +196,7 @@ def moveEnemies(enemies, wholeRoomData, fps, tankStats):
 				
 			elif enemies[i][2] == 1:
 				if x - enemies[i][4] < 0: pass 
+				elif int(playerxy[0]) == int(x - enemies[i][4]) and int(playerxy[1]) == int(y): pass
 				elif wholeRoomData[int(y)][int(x - enemies[i][4])] == "4" or wholeRoomData[int(y)][int(x - enemies[i][4])] == "1":
 					enemies[i][0] -= enemies[i][4]
 					enemies[i][6] -= 1
@@ -217,7 +228,7 @@ def moveEnemies(enemies, wholeRoomData, fps, tankStats):
 			if l:
 				enemies[i][4] = tankStats[enemies[i][3]+1][0] / fps
 				enemies[i][6] = int(1 / enemies[i][4])
-		else: enemies[i][4] = 0
+		else: enemies[i][4], enemies[i][6], enemies[i][0], enemies[i][1] = 0, 0, int(enemies[i][0]) + 0.5, int(enemies[i][1]) + 0.5
 
 def pickupPacks(health, ammo, healthPacks, ammoPacks, playerxy):
 	healthPacks2, ammoPacks2 = [], []

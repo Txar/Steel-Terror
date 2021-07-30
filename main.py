@@ -84,12 +84,12 @@ while 1:
 		if keys[K_w] and not uu: playerxy[2], uu = 0, 1
 		if keys[K_s] and not uu: playerxy[2], uu = 2, 1
 		if not uu: distanceToMove = 0
-		playerxy = checkPlayerCollisions(playerxy, distanceToMove, wholeRoomData)
+		playerxy = checkPlayerCollisions(playerxy, distanceToMove, wholeRoomData, enemies)
 		bullets = moveBullets(bullets)
 		health, ammo, healthPacks, ammoPacks = pickupPacks(health, ammo, healthPacks, ammoPacks, playerxy)
 		bullets, wholeRoomData, breakableData, enemies, health, healthPacks, ammoPacks = checkBulletCollisions(bullets, wholeRoomData, breakableData, playerxy, enemies, health, healthPacks, ammoPacks)
 		enemies, bullets = shootEnemies(enemies, bullets, wholeRoomData, tankStats, fps, playerxy)
-		moveEnemies(enemies, wholeRoomData, fps, tankStats)
+		moveEnemies(enemies, wholeRoomData, fps, tankStats, playerxy)
 		blitRoom(data, screen)
 		blitWater(waterData, screen, floor(t))
 		blitPacks(healthPacks, ammoPacks, screen)
