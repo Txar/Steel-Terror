@@ -127,7 +127,7 @@ def loadScreen(wd, hd):
 
 # Load all image data
 def loadImages():
-	global size, forest, water, tanks, bullet, duck
+	global size, forest, water, tanks, bullet, duck0, duck1, none0, none1, snek0, snek1
 
 	water = []
 
@@ -175,7 +175,12 @@ def loadImages():
 			treads[i - 1].append(surfaceImage(Image.open("sprites/tanks/treads/tread" + str(i) + str(j) +".png").resize((size, size), Image.NONE)))
 
 	bullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((size, size), Image.NONE))
-	duck = surfaceImage(Image.open("sprites/pets/duck.png").resize((size, size), Image.NONE))
+	duck0 = surfaceImage(Image.open("sprites/pets/duck0.png").resize((size, size), Image.NONE))
+	duck1 = surfaceImage(Image.open("sprites/pets/duck1.png").resize((size, size), Image.NONE))
+	none0 = surfaceImage(Image.open("sprites/pets/none.png").resize((size, size), Image.NONE))
+	none1 = surfaceImage(Image.open("sprites/pets/none.png").resize((size, size), Image.NONE))
+	snek0 = surfaceImage(Image.open("sprites/pets/snek0.png").resize((size, size), Image.NONE))
+	snek1 = surfaceImage(Image.open("sprites/pets/snek1.png").resize((size, size), Image.NONE))
 
 	return forest, desert, ice, dungeon, tanks, enemyTanks, treads, bullet
 
@@ -311,7 +316,9 @@ def blitSurround(screen, t, ox, oy, allData):
 	blitBreakBlock(breakableData, biome, screen, ox, oy)
 	blitBush(bushData, biome, screen, ox, oy)
 
-def blitPet(petxy, screen):
+def blitPet(petxy, playerxy, screen):
 	global centerPos, size
-	screen.blit(eval(petxy[2]), (centerPos[0] + petxy[0] * size - size // 2, centerPos[1] + petxy[1] * size - size // 2))
+	if playerxy[0] >= petxy[0]: c = "0"
+	else: c = "1"
+	screen.blit(eval(petxy[2] + c), (centerPos[0] + petxy[0] * size - size // 2, centerPos[1] + petxy[1] * size - size // 2))
 

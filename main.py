@@ -18,7 +18,7 @@ clock = time.Clock()
 
 playerSpeed = 2.5
 playerxy = [0.5, 0.5, 0]
-petxy = [0, 0, "duck"]
+petxy = [0, 0, "snek"] #none, duck, snek
 health = 3
 healthPacks = [] #[x, y]
 ammoPacks = [] #[x, y]
@@ -137,7 +137,7 @@ while 1:
 		blitBlock(blockData, biome, screen)
 		blitBreakBlock(breakableData, biome, screen)
 		blitBush(bushData, biome, screen)
-		blitPet(petxy, screen)
+		blitPet(petxy, playerxy, screen)
 
 
 		blitHealth(screen, health, size)
