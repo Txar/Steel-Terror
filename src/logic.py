@@ -82,7 +82,7 @@ def checkBulletCollisions(bullets, wholeRoomData, breakableData, playerxy, enemi
 					if randint(0, 9) == 0:
 						healthPacks.append([x + 0.5 + uniform(-0.2, 0.2), y + 0.5 + uniform(-0.2, 0.2)])
 					else:
-						for v in range(0, randint(0, 20)):
+						for v in range(0, randint(0, 12)):
 							ammoPacks.append([x + 0.5 + uniform(-0.2, 0.2), y + 0.5 + uniform(-0.2, 0.2)])
 					break
 		elif bullets[i][4] == 1:
@@ -265,3 +265,13 @@ def pickupPacks(health, ammo, healthPacks, ammoPacks, playerxy):
 			continue
 		ammoPacks2.append(ammoPacks[i])
 	return health, ammo, healthPacks2, ammoPacks2
+
+def movePet(petxy, playerxy):
+	if playerxy[0] - 2 > petxy[0] and playerxy[0] - 2 - petxy[0] > 0.025:
+		petxy[0] += 0.025
+	elif playerxy[0] - 2 < petxy[0] and petxy[0] - playerxy[0] - 2 > 0.025:
+		petxy[0] -= 0.025
+	if playerxy[1] - 2 > petxy[1] and playerxy[1] - 2 - petxy[1] > 0.025:
+		petxy[1] += 0.025
+	elif playerxy[1] - 2 < petxy[1] and petxy[1] - playerxy[1] - 2 > 0.025:
+		petxy[1] -= 0.025

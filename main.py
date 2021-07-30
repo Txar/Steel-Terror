@@ -2,6 +2,7 @@ from pygame import *
 from src.generation import *
 from src.rendering import *
 from src.logic import *
+from random import *
 
 mixer.pre_init(44100, -16, 2, 1024)
 mixer.init()
@@ -17,12 +18,14 @@ clock = time.Clock()
 
 playerSpeed = 2.5
 playerxy = [0.5, 0.5, 0]
+petxy = [0, 0, "duck"]
 health = 3
 healthPacks = [] #[x, y]
 ammoPacks = [] #[x, y]
 ammo = 50
 bullets = [] #[bullet x, bullet y, bullet direction, bullet distance to move, 0 is player bullet 1 is enemy bullets]
 enemies = [] #[x, y, direction, tank type, distance to move, ticks since the last shot, how many times travel the "distance to move"]
+
 tankStats = [0, [2.5, 4.5, 2.0, 0, 0], [3.7, 6.5, 2.7, 1, 1], [1.2, 5.5, 1.0, 2, 0], [3.1, 5.5, 0.8, 3, 1]] #tank type used currently, [speed, bullet speed, shooting cooldown, sprite, tracks sprite]
 
 biomeDict = {
@@ -56,7 +59,9 @@ for i in range(mapSize):
 
 display.toggle_fullscreen()
 
-data, waterData, bushData, blockData, breakableData, wholeRoomData, biome = mapMap[10][10]
+mapPos = [6, 6]
+
+data, waterData, bushData, blockData, breakableData, wholeRoomData, biome = mapMap[mapPos[0]][mapPos[1]]
 spreadEnemy(enemies, wholeRoomData, 0, playerxy)
 
 globals().update(locals())
@@ -101,7 +106,7 @@ while 1:
 				t2 = 0
 				spawnBullet(bullets, playerxy[0], playerxy[1], playerxy[2], playerBulletSpeed, fps, 0)
 				ammo -= 1
-			elif e.type == KEYDOWN and e.key == K_f: spreadEnemy(enemies, wholeRoomData, 2, playerxy)
+			elif e.type == KEYDOWN and e.key == K_f: spreadEnemy(enemies, wholeRoomData, randint(0, 3), playerxy)
 		keys = key.get_pressed()
 		distanceToMove = playerSpeed * deltaTime
 		uu = 0
@@ -111,11 +116,18 @@ while 1:
 		if keys[K_s] and not uu: playerxy[2], uu = 2, 1
 		if not uu: distanceToMove = 0
 		playerxy = checkPlayerCollisions(playerxy, distanceToMove, wholeRoomData, enemies)
+		movePet(petxy, playerxy)
 		bullets = moveBullets(bullets)
 		health, ammo, healthPacks, ammoPacks = pickupPacks(health, ammo, healthPacks, ammoPacks, playerxy)
 		bullets, wholeRoomData, breakableData, enemies, health, healthPacks, ammoPacks = checkBulletCollisions(bullets, wholeRoomData, breakableData, playerxy, enemies, health, healthPacks, ammoPacks)
 		enemies, bullets = shootEnemies(enemies, bullets, wholeRoomData, tankStats, fps, playerxy)
 		moveEnemies(enemies, wholeRoomData, fps, tankStats, playerxy)
+
+		for i in range(-1, 2):
+			for j in range(-1, 2):
+				if j == 0 and i == 0: continue
+				blitSurround(screen, t, i * 20, j * 16, mapMap[mapPos[0] + i][mapPos[1] + j])
+ 
 		blitRoom(data, screen)
 		blitWater(waterData, screen, floor(t))
 		blitPacks(healthPacks, ammoPacks, screen)
@@ -125,9 +137,11 @@ while 1:
 		blitBlock(blockData, biome, screen)
 		blitBreakBlock(breakableData, biome, screen)
 		blitBush(bushData, biome, screen)
+		blitPet(petxy, screen)
+
 
 		blitHealth(screen, health, size)
-		blitAmmo(screen, ammo, size, scw - 120, 5, ff)
+		blitAmmo(screen, ammo, size, scw - 120, size, ff)
 
 		ti = time.get_ticks()
 		deltaTime = (ti - lastTicks) / 1000

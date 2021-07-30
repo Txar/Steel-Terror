@@ -75,8 +75,6 @@ def generateRoom(size = (20, 16), shore = False, water = False):
 	bNoise = PerlinNoise(octaves = 10, seed = randint(1, 50))
 	wtNoise = PerlinNoise(octaves = 10, seed = randint(1, 50))
 
-	
-
 	# Outer rim
 	for i in range(h):
 		for j in range(w):

@@ -60,7 +60,7 @@ def blitHealth(screen, health, size):
 	heart = surfaceImage(Image.open("sprites/ui/heart.png").resize((4 * size, 4 * size), Image.NONE))
 
 	x = 3 / 5
-	y = 0.2
+	y = 0.4
 	for i in range(health):
 		screen.blit(heart, (int(x * size * 5), int(y * size * 5)))
 		x += 1
@@ -70,9 +70,11 @@ def blitHealth(screen, health, size):
 
 def blitAmmo(screen, ammo, size, x, y, f):
 	bullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((8 * size, 8 * size), Image.NONE))
+	buttSurface = surfaceNinepatch("sprites/ui/colorButton.9.png", 10 + len(str(ammo)) * size // 2, int(size * 1.7), size)
+	textSurface = f.render("x" + str(ammo), False, (0, 0, 0))
 
+	screen.blit(buttSurface, (x + size, y))
 	screen.blit(bullet, (x, y))
-	textSurface = f.render("x" + str(ammo), False, (255, 255, 255))
 	screen.blit(textSurface, (x + 6 * size, y + 3 * size))
 
 # a = value, ra = dimension, ts = tile size
@@ -125,7 +127,7 @@ def loadScreen(wd, hd):
 
 # Load all image data
 def loadImages():
-	global size, forest, water, tanks, bullet
+	global size, forest, water, tanks, bullet, duck
 
 	water = []
 
@@ -173,6 +175,7 @@ def loadImages():
 			treads[i - 1].append(surfaceImage(Image.open("sprites/tanks/treads/tread" + str(i) + str(j) +".png").resize((size, size), Image.NONE)))
 
 	bullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((size, size), Image.NONE))
+	duck = surfaceImage(Image.open("sprites/pets/duck.png").resize((size, size), Image.NONE))
 
 	return forest, desert, ice, dungeon, tanks, enemyTanks, treads, bullet
 
@@ -221,35 +224,34 @@ def renderRoom(r, biome):
 	return data, waterData, bushData, blockData, breakableData, room, biome
 
 # Draw the room data into the screen
-def blitRoom(data, screen):
+def blitRoom(data, screen, ox = 0, oy = 0):
 	global centerPos
-	screen.fill((0, 0, 0))
 	for i in range(len(data) - 1):
 		for j in range(len(data[0])):
 			if data[i][j] == None: continue
-			screen.blit(data[i][j], (centerPos[0] + size * j, centerPos[1] + size * i))
+			screen.blit(data[i][j], (centerPos[0] + size * j + ox * size, centerPos[1] + size * i + oy * size))
 
 # Animate water with data as positions, t is ticks
-def blitWater(waterData, screen, t):
+def blitWater(waterData, screen, t, ox = 0, oy = 0):
 	global size, centerPos
 	for i in waterData:
 		tt = int(min(((sin(radians(t)) + 1) / 2) * 33, 32))
-		screen.blit(water[tt % 8], (centerPos[0] + size * i[0], centerPos[1] + size * i[1]))
+		screen.blit(water[tt % 8], (centerPos[0] + size * i[0] + ox * size, centerPos[1] + size * i[1] + oy * size))
 
-def blitBush(bushData, biome, screen):
+def blitBush(bushData, biome, screen, ox = 0, oy = 0):
 	global size, centerPos
 	for i in bushData:
-		screen.blit(biome[3], (centerPos[0] + size * i[0], centerPos[1] + size * i[1]))
+		screen.blit(biome[3], (centerPos[0] + size * i[0] + ox * size, centerPos[1] + size * i[1] + oy * size))
 
-def blitBlock(blockData, biome, screen):
+def blitBlock(blockData, biome, screen, ox = 0, oy = 0):
 	global size, centerPos
 	for i in blockData:
-		screen.blit(biome[1], (centerPos[0] + size * i[0], centerPos[1] + size * i[1]))
+		screen.blit(biome[1], (centerPos[0] + size * i[0] + ox * size, centerPos[1] + size * i[1] + oy * size))
 
-def blitBreakBlock(breakableData, biome, screen):
+def blitBreakBlock(breakableData, biome, screen, ox = 0, oy = 0):
 	global size, centerPos
 	for i in breakableData:
-		screen.blit(biome[2], (centerPos[0] + size * i[0], centerPos[1] + size * i[1]))
+		screen.blit(biome[2], (centerPos[0] + size * i[0] + ox * size, centerPos[1] + size * i[1] + oy * size))
 
 def blitPlayer(playerxy, tp, screen, t, moving):
 	global size, centerPos
@@ -295,9 +297,21 @@ def blitPacks(healthPacks, ammoPacks, screen):
 	for i in ammoPacks:
 		screen.blit(bullet, (centerPos[0] + i[0] * size - size // 2, centerPos[1] + i[1] * size - size // 2))
 
-def blitSurround(screen, biome, t, data, waterData, blockData, breakableData, bushData):
-	blitRoom(data, screen)
-	blitWater(waterData, screen, floor(t))
-	blitBlock(blockData, biome, screen)
-	blitBreakBlock(breakableData, biome, screen)
-	blitBush(bushData, biome, screen)
+def blitSurround(screen, t, ox, oy, allData):
+	data = allData[0]
+	waterData = allData[1]
+	bushData = allData[2]
+	blockData = allData[3]
+	breakableData = allData[4]
+	biome = allData[6]
+
+	blitRoom(data, screen, ox, oy)
+	blitWater(waterData, screen, floor(t), ox, oy)
+	blitBlock(blockData, biome, screen, ox, oy)
+	blitBreakBlock(breakableData, biome, screen, ox, oy)
+	blitBush(bushData, biome, screen, ox, oy)
+
+def blitPet(petxy, screen):
+	global centerPos, size
+	screen.blit(eval(petxy[2]), (centerPos[0] + petxy[0] * size - size // 2, centerPos[1] + petxy[1] * size - size // 2))
+
