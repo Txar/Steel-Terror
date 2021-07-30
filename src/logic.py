@@ -93,23 +93,26 @@ def checkBulletCollisions(bullets, wholeRoomData, breakableData, playerxy, enemi
 def spawnEnemy(enemies, x, y, tt):
 	enemies.append([x, y, 1, tt, 0, 0, 0])
 
-def spreadEnemy(enemies, wholeRoomData, tt):
+def spreadEnemy(enemies, wholeRoomData, tt, playerxy):
 	usableTiles = []
 	for i in range(0, len(wholeRoomData)):
 		for j in range(0, len(wholeRoomData[i])):
 			if wholeRoomData[i][j] == "1" or wholeRoomData[i][j] == "4":
 				usableTiles.append([i, j])
+	ticksi = 0
 	while 1:
+		if ticksi < 360: ticksi += 1
+		else: break
 		a = 0
 		g = randint(0, len(usableTiles)-1)
 		for i in enemies:
-			if i[0] == usableTiles[g][0] and i[1] == usableTiles[g][1]:
+			if i[0] == usableTiles[g][0] and i[1] == usableTiles[g][1] or playerxy[0] == usableTiles[g][0] and playerxy[1] == usableTiles[g][1]:
 				a = 1
 				break
 		if not a:
 			usedTile = usableTiles[g]
 			break
-	spawnEnemy(enemies, usedTile[1] + 0.5, usedTile[0] + 0.5, tt)
+	if ticksi < 360: spawnEnemy(enemies, usedTile[1] + 0.5, usedTile[0] + 0.5, tt)
 
 def roundTo8(x, base = 8):
 	return int(base * math.ceil(float(x) / base) - 8)
@@ -168,6 +171,9 @@ def shootEnemies(enemies, bullets, wholeRoomData, tt, fps, playerxy):
 
 def moveEnemies(enemies, wholeRoomData, fps, tankStats, playerxy):
 	for i in range(0, len(enemies)):
+		enemies2 = []
+		for z in range(0, len(enemies)):
+			if z != i: enemies2.append([int(enemies[z][0]), int(enemies[z][1])])
 		x, y = enemies[i][0] - 0.5, enemies[i][1] - 0.5
 		if enemies[i][6] > 0:
 			if enemies[i][2] == 0:
@@ -210,20 +216,20 @@ def moveEnemies(enemies, wholeRoomData, fps, tankStats, playerxy):
 			enemies[i][1] = int(enemies[i][1]) + 0.5
 			l = False
 			if enemies[i][2] == 0:
-				if y - 1 >= 0:
-					if wholeRoomData[int(y - 0.5)][int(x)] == "4" or wholeRoomData[int(y - 0.5)][int(x)] == "1":
+				if y - 1 >= 0 and [x, y - 1] not in enemies2:
+					if wholeRoomData[int(y - 1)][int(x)] == "4" or wholeRoomData[int(y - 1)][int(x)] == "1":
 						l = True
 			elif enemies[i][2] == 3:
-				if x + 1 <= 19:
-					if wholeRoomData[int(y)][int(x + 0.5)] == "4" or wholeRoomData[int(y)][int(x + 0.5)] == "1":
+				if x + 1 <= 19 and [x + 1, y] not in enemies2:
+					if wholeRoomData[int(y)][int(x + 1)] == "4" or wholeRoomData[int(y)][int(x + 1)] == "1":
 						l = True
 			elif enemies[i][2] == 2:
-				if y + 1 <= 15:
-					if wholeRoomData[int(y + 0.5)][int(x)] == "4" or wholeRoomData[int(y + 0.5)] == "1":
+				if y + 1 <= 15 and [x, y + 1] not in enemies2:
+					if wholeRoomData[int(y + 1)][int(x)] == "4" or wholeRoomData[int(y + 1)] == "1":
 						l = True
 			elif enemies[i][2] == 1:
-				if x - 1 >= 0:
-					if wholeRoomData[int(y)][int(x - 0.5)] == "4" or wholeRoomData[int(y)][int(x - 0.5)] == "1":
+				if x - 1 >= 0 and [x - 1, y] not in enemies2:
+					if wholeRoomData[int(y)][int(x - 1)] == "4" or wholeRoomData[int(y)][int(x - 1)] == "1":
 						l = True
 			if l:
 				enemies[i][4] = tankStats[enemies[i][3]+1][0] / fps
