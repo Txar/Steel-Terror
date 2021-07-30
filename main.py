@@ -2,6 +2,7 @@ from pygame import *
 #from pygame.locals import *
 from src.rendering import *
 from src.logic import *
+from random import *
 
 mixer.pre_init(44100, -16, 2, 1024)
 mixer.init()
@@ -75,7 +76,7 @@ while 1:
 				t2 = 0
 				spawnBullet(bullets, playerxy[0], playerxy[1], playerxy[2], playerBulletSpeed, fps, 0)
 				ammo -= 1
-			elif e.type == KEYDOWN and e.key == K_f: spreadEnemy(enemies, wholeRoomData, 2, playerxy)
+			elif e.type == KEYDOWN and e.key == K_f: spreadEnemy(enemies, wholeRoomData, randint(0, 3), playerxy)
 		keys = key.get_pressed()
 		distanceToMove = playerSpeed * deltaTime
 		uu = 0
