@@ -22,7 +22,7 @@ petxy = [0, 0, "duck"]
 health = 3
 healthPacks = [] #[x, y]
 ammoPacks = [] #[x, y]
-ammo = 20
+ammo = 50
 bullets = [] #[bullet x, bullet y, bullet direction, bullet distance to move, 0 is player bullet 1 is enemy bullets]
 enemies = [] #[x, y, direction, tank type, distance to move, ticks since the last shot, how many times travel the "distance to move"]
 
