@@ -135,6 +135,7 @@ def loadImages():
 	dungeon = []
 
 	tanks = []
+	enemyTanks = []
 	tankTypes = ["default", "fast", "strong", "epic"]
 
 	treads = []
@@ -151,6 +152,14 @@ def loadImages():
 	# up, right, down, left
 	ii = 0
 	for i in tankTypes:
+		enemyTanks.append([])
+		enemyTanks[ii].append(applyMask(surfaceImage(Image.open("sprites/tanks/" + i + "/0.png").resize((size, size), Image.NONE)), [2, 1, 1], size))
+		enemyTanks[ii].append(applyMask(surfaceImage(ImageOps.mirror(Image.open("sprites/tanks/" + i + "/1.png").resize((size, size), Image.NONE))), [2, 1, 1], size))
+		enemyTanks[ii].append(applyMask(surfaceImage(ImageOps.flip(Image.open("sprites/tanks/" + i + "/0.png").resize((size, size), Image.NONE))), [2, 1, 1], size))
+		enemyTanks[ii].append(applyMask(surfaceImage(Image.open("sprites/tanks/" + i + "/1.png").resize((size, size), Image.NONE)), [2, 1, 1], size))
+		ii += 1
+	ii = 0
+	for i in tankTypes:
 		tanks.append([])
 		tanks[ii].append(surfaceImage(Image.open("sprites/tanks/" + i + "/0.png").resize((size, size), Image.NONE)))
 		tanks[ii].append(surfaceImage(ImageOps.mirror(Image.open("sprites/tanks/" + i + "/1.png").resize((size, size), Image.NONE))))
@@ -165,7 +174,7 @@ def loadImages():
 
 	bullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((size, size), Image.NONE))
 
-	return forest, desert, ice, dungeon, tanks, treads, bullet
+	return forest, desert, ice, dungeon, tanks, enemyTanks, treads, bullet
 
 
 # Returns the image data of a room, and the position data of layers
@@ -267,7 +276,17 @@ def blitEnemies(enemies, screen, t, tankStats, tp):
 		screen.blit(enemy, (centerPos[0] + size * i[0] - g, centerPos[1] + size * i[1] - g))
 
 def blitBullets(bullets, screen):
-	global bullet, size
+	global bullet, size, centerPos
 	g = size/2
 	for i in bullets:
 		screen.blit(transform.rotate(bullet, i[2]*90), (centerPos[0] + size * i[0] - g, centerPos[1] + size * i[1] - g))
+
+def blitPacks(healthPacks, ammoPacks, screen):
+	global centerPos, size
+	heart = surfaceImage(Image.open("sprites/ui/heart.png").resize((int(size / 2), int(size / 2)), Image.NONE))
+	bullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((size, size), Image.NONE))
+
+	for i in healthPacks:
+		screen.blit(heart, (centerPos[0] + i[0] * size - size // 2, centerPos[1] + i[1] * size - size // 2))
+	for i in ammoPacks:
+		screen.blit(bullet, (centerPos[0] + i[0] * size - size // 2, centerPos[1] + i[1] * size - size // 2))
