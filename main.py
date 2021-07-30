@@ -9,7 +9,7 @@ mixer.init()
 beep = mixer.Sound("sfx/hit.wav")
 init()
 
-screen, size, scw, sch = loadScreen(20, 16)
+screen, size, scw, sch, centerPos = loadScreen(20, 16)
 forest, desert, ice, dungeon, tanks, enemyTanks, treads, bullet = loadImages()
 ff = font.Font("fonts/font.ttf", size * 4)
 
@@ -64,7 +64,7 @@ display.toggle_fullscreen()
 mapPos = [6, 6]
 
 data, waterData, bushData, blockData, breakableData, wholeRoomData, biome = mapMap[mapPos[0]][mapPos[1]]
-enemiesToAdd = addEnemies(1)
+enemiesToAdd = addEnemies(0)
 
 globals().update(locals())
 
@@ -122,6 +122,10 @@ while 1:
 		if keys[K_s] and not uu: playerxy[2], uu = 2, 1
 		if not uu: distanceToMove = 0
 		playerxy = checkPlayerCollisions(playerxy, distanceToMove, wholeRoomData, enemies)
+
+		if playerxy[0] < 0.5 and len(enemiesToAdd) == 0:
+			mapPos = [mapPos[0] - 1, mapPos[1]]
+
 		movePet(petxy, playerxy)
 		bullets = moveBullets(bullets)
 		health, ammo, healthPacks, ammoPacks = pickupPacks(health, ammo, healthPacks, ammoPacks, playerxy)
@@ -131,15 +135,17 @@ while 1:
 		if spawnCooldown == 0:
 			spawnCooldown = randint(120, 720)
 			h = randint(0, len(enemiesToAdd))
-			spreadEnemy(enemies, wholeRoomData, enemiesToAdd[h][0], playerxy)
-			enemiesToAdd.pop(h)
+			if len(enemiesToAdd) > 0:
+				if len(enemiesToAdd[h]) > 0:
+					spreadEnemy(enemies, wholeRoomData, enemiesToAdd[h][0], playerxy)
+				enemiesToAdd.pop(h)
 		else: spawnCooldown -= 1
 
 		for i in range(-1, 2):
 			for j in range(-1, 2):
 				if j == 0 and i == 0: continue
 				blitSurround(screen, t, i * 20, j * 16, mapMap[mapPos[0] + i][mapPos[1] + j])
- 
+
 		blitRoom(data, screen)
 		blitWater(waterData, screen, floor(t))
 		blitPacks(healthPacks, ammoPacks, screen, heart, bullet)

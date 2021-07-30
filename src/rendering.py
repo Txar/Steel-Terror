@@ -119,7 +119,7 @@ def loadScreen(wd, hd):
 	screen = display.set_mode((scw, sch), RESIZABLE)
 	centerPos = (scw // 2 - (size * w) // 2, sch // 2 -(size * h) // 2)
 
-	return screen, size // 8, scw, sch
+	return screen, size // 8, scw, sch, centerPos
 
 # Load all image data
 def loadImages():
