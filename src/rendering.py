@@ -178,10 +178,7 @@ def loadImages():
 
 
 # Returns the image data of a room, and the position data of layers
-def renderRoom(room, biome):
-	r = room.read()
-	room.close()
-
+def renderRoom(r, biome):
 	rr = r.split("\n")
 	room = []
 
@@ -221,7 +218,7 @@ def renderRoom(room, biome):
 
 		idd += 1
 
-	return data, waterData, bushData, blockData, breakableData, room
+	return data, waterData, bushData, blockData, breakableData, room, biome
 
 # Draw the room data into the screen
 def blitRoom(data, screen):
@@ -297,3 +294,10 @@ def blitPacks(healthPacks, ammoPacks, screen):
 		screen.blit(heart, (centerPos[0] + i[0] * size - size // 2, centerPos[1] + i[1] * size - size // 2))
 	for i in ammoPacks:
 		screen.blit(bullet, (centerPos[0] + i[0] * size - size // 2, centerPos[1] + i[1] * size - size // 2))
+
+def blitSurround(screen, biome, t, data, waterData, blockData, breakableData, bushData):
+	blitRoom(data, screen)
+	blitWater(waterData, screen, floor(t))
+	blitBlock(blockData, biome, screen)
+	blitBreakBlock(breakableData, biome, screen)
+	blitBush(bushData, biome, screen)

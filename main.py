@@ -1,5 +1,5 @@
 from pygame import *
-#from pygame.locals import *
+from src.generation import *
 from src.rendering import *
 from src.logic import *
 
@@ -23,14 +23,40 @@ ammoPacks = [] #[x, y]
 ammo = 50
 bullets = [] #[bullet x, bullet y, bullet direction, bullet distance to move, 0 is player bullet 1 is enemy bullets]
 enemies = [] #[x, y, direction, tank type, distance to move, ticks since the last shot, how many times travel the "distance to move"]
-tankStats = [1, [2.5, 4.5, 2.0, 0, 0], [3.7, 6.5, 2.7, 1, 1], [1.2, 5.5, 1.0, 2, 0], [3.1, 5.5, 0.8, 3, 1]] #tank type used currently, [speed, bullet speed, shooting cooldown, sprite, tracks sprite]
+tankStats = [0, [2.5, 4.5, 2.0, 0, 0], [3.7, 6.5, 2.7, 1, 1], [1.2, 5.5, 1.0, 2, 0], [3.1, 5.5, 0.8, 3, 1]] #tank type used currently, [speed, bullet speed, shooting cooldown, sprite, tracks sprite]
 
-biome = ice
-room = open("rooms/{0}.room".format(randint(0, 119)), "r")
+biomeDict = {
+	1: forest,
+	2: desert,
+	3: ice,
+	5: dungeon
+}
+
+mapSize = 20
+
+mapList = generateMap(mapSize, 4)
+
+mapMap = []
+for i in range(mapSize):
+	mapMap.append([])
+	for j in range(mapSize):
+		jj = mapList[i][j]
+		if jj == 0:
+			f = open("rooms/0.water", "r")
+			mapMap[i].append(renderRoom(f.read(), biomeDict[1]))
+			f.close()
+		elif jj == 4:
+			f = open("rooms/{0}.shore".format(randint(0, 39)), "r")
+			mapMap[i].append(renderRoom(f.read(), biomeDict[2]))
+			f.close()
+		else:
+			f = open("rooms/{0}.room".format(randint(0, 39)), "r")
+			mapMap[i].append(renderRoom(f.read(), biomeDict[jj]))
+			f.close()
 
 display.toggle_fullscreen()
 
-data, waterData, bushData, blockData, breakableData, wholeRoomData = renderRoom(room, biome)
+data, waterData, bushData, blockData, breakableData, wholeRoomData, biome = mapMap[10][10]
 spreadEnemy(enemies, wholeRoomData, 0, playerxy)
 
 globals().update(locals())

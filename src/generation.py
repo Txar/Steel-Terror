@@ -110,7 +110,7 @@ Codes:
 def generateMap(size, dungeons):
 	w = size
 	h = size
-
+	print(h)
 	# Creating biome noises
 	dNoise = PerlinNoise(octaves = 10, seed = randint(1, 50))
 	iNoise = PerlinNoise(octaves = 10, seed = randint(1, 50))
@@ -175,7 +175,7 @@ def generateRooms(dir = "../rooms"):
 		id += 1
 
 	id = 0
-	for i in range(20):
+	for i in range(40):
 		f = open(dir + "/" + str(id) + ".shore", "w+")
 
 		f.write(stringMap(generateRoom(shore = True)))
