@@ -73,6 +73,10 @@ t2 = 0
 deltaTime = 0
 lastTicks = 0
 
+bullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((8 * size, 8 * size), Image.NONE))
+buttSurface = surfaceNinepatch("sprites/ui/colorButton.9.png", 10 + int(len(str(ammo)) * 2), 9, size)
+heart = surfaceImage(Image.open("sprites/ui/heart.png").resize((4 * size, 4 * size), Image.NONE))
+
 while 1:
 	ee = event.get()
 
@@ -130,7 +134,7 @@ while 1:
  
 		blitRoom(data, screen)
 		blitWater(waterData, screen, floor(t))
-		blitPacks(healthPacks, ammoPacks, screen)
+		blitPacks(healthPacks, ammoPacks, screen, heart, bullet)
 		blitPlayer(playerxy, [tanks[tankSprite], treads[tankTrackSprite]], screen, t / 5, uu)
 		blitEnemies(enemies, screen, t, tankStats, [enemyTanks, treads])
 		blitBullets(bullets, screen)
@@ -140,8 +144,8 @@ while 1:
 		blitPet(petxy, playerxy, screen)
 
 
-		blitHealth(screen, health, size)
-		blitAmmo(screen, ammo, size, scw - 20 * size, size, ff)
+		blitHealth(screen, health, size, heart)
+		blitAmmo(screen, ammo, size, scw - 20 * size, size, ff, bullet, buttSurface)
 
 		ti = time.get_ticks()
 		deltaTime = (ti - lastTicks) / 1000

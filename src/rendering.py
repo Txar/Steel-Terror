@@ -56,9 +56,7 @@ def button(screen, m, size, x, y, ox, oy, burl, pburl, turl):
 
 	return a
 
-def blitHealth(screen, health, size):
-	heart = surfaceImage(Image.open("sprites/ui/heart.png").resize((4 * size, 4 * size), Image.NONE))
-
+def blitHealth(screen, health, size, heart):
 	x = 3 / 5
 	y = 0.4
 	for i in range(health):
@@ -68,9 +66,7 @@ def blitHealth(screen, health, size):
 			x = 3 / 5
 			y += 1
 
-def blitAmmo(screen, ammo, size, x, y, f):
-	bullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((8 * size, 8 * size), Image.NONE))
-	buttSurface = surfaceNinepatch("sprites/ui/colorButton.9.png", 10 + int(len(str(ammo)) * 2), 9, size)
+def blitAmmo(screen, ammo, size, x, y, f, bullet, buttSurface):
 	textSurface = f.render("x" + str(ammo), False, (0, 0, 0))
 
 	screen.blit(buttSurface, (x + size, y))
@@ -177,8 +173,8 @@ def loadImages():
 	bullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((size, size), Image.NONE))
 	duck0 = surfaceImage(Image.open("sprites/pets/duck0.png").resize((size, size), Image.NONE))
 	duck1 = surfaceImage(Image.open("sprites/pets/duck1.png").resize((size, size), Image.NONE))
-	none0 = surfaceImage(Image.open("sprites/pets/none.png").resize((size, size), Image.NONE))
-	none1 = surfaceImage(Image.open("sprites/pets/none.png").resize((size, size), Image.NONE))
+	none0 = Surface((size, size), SRCALPHA)
+	none1 = Surface((size, size), SRCALPHA)
 	snek0 = surfaceImage(Image.open("sprites/pets/snek0.png").resize((size, size), Image.NONE))
 	snek1 = surfaceImage(Image.open("sprites/pets/snek1.png").resize((size, size), Image.NONE))
 
@@ -292,10 +288,8 @@ def blitBullets(bullets, screen):
 	for i in bullets:
 		screen.blit(transform.rotate(bullet, i[2]*90), (centerPos[0] + size * i[0] - g, centerPos[1] + size * i[1] - g))
 
-def blitPacks(healthPacks, ammoPacks, screen):
+def blitPacks(healthPacks, ammoPacks, screen, heart, bullet):
 	global centerPos, size
-	heart = surfaceImage(Image.open("sprites/ui/heart.png").resize((int(size / 2), int(size / 2)), Image.NONE))
-	bullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((size, size), Image.NONE))
 
 	for i in healthPacks:
 		screen.blit(heart, (centerPos[0] + i[0] * size - size // 2, centerPos[1] + i[1] * size - size // 2))
