@@ -30,7 +30,7 @@ room = open("rooms/{0}.room".format(randint(0, 119)), "r")
 
 display.toggle_fullscreen()
 
-data, waterData, bushData, breakableData, wholeRoomData = renderRoom(room, biome)
+data, waterData, bushData, blockData, breakableData, wholeRoomData = renderRoom(room, biome)
 spreadEnemy(enemies, wholeRoomData, 0, playerxy)
 
 globals().update(locals())
@@ -96,6 +96,7 @@ while 1:
 		blitPlayer(playerxy, [tanks[tankSprite], treads[tankTrackSprite]], screen, t / 5, uu)
 		blitEnemies(enemies, screen, t, tankStats, [enemyTanks, treads])
 		blitBullets(bullets, screen)
+		blitBlock(blockData, biome, screen)
 		blitBreakBlock(breakableData, biome, screen)
 		blitBush(bushData, biome, screen)
 
