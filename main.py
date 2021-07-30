@@ -9,7 +9,7 @@ beep = mixer.Sound("sfx/hit.wav")
 init()
 
 screen, size, scw, sch = loadScreen(20, 16)
-forest, desert, ice, dungeon, tanks, treads, bullet = loadImages()
+forest, desert, ice, dungeon, tanks, enemyTanks, treads, bullet = loadImages()
 ff = font.Font("fonts/font.ttf", size * 4)
 
 fps = 60
@@ -94,7 +94,7 @@ while 1:
 		blitWater(waterData, screen, floor(t))
 		blitPacks(healthPacks, ammoPacks, screen)
 		blitPlayer(playerxy, [tanks[tankSprite], treads[tankTrackSprite]], screen, t / 5, uu)
-		blitEnemies(enemies, screen, t, tankStats, [tanks, treads])
+		blitEnemies(enemies, screen, t, tankStats, [enemyTanks, treads])
 		blitBullets(bullets, screen)
 		blitBreakBlock(breakableData, biome, screen)
 		blitBush(bushData, biome, screen)

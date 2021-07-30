@@ -135,6 +135,7 @@ def loadImages():
 	dungeon = []
 
 	tanks = []
+	enemyTanks = []
 	tankTypes = ["default", "fast", "strong", "epic"]
 
 	treads = []
@@ -151,6 +152,14 @@ def loadImages():
 	# up, right, down, left
 	ii = 0
 	for i in tankTypes:
+		enemyTanks.append([])
+		enemyTanks[ii].append(applyMask(surfaceImage(Image.open("sprites/tanks/" + i + "/0.png").resize((size, size), Image.NONE)), [3, 1, 1], size))
+		enemyTanks[ii].append(applyMask(surfaceImage(ImageOps.mirror(Image.open("sprites/tanks/" + i + "/1.png").resize((size, size), Image.NONE))), [3, 1, 1], size))
+		enemyTanks[ii].append(applyMask(surfaceImage(ImageOps.flip(Image.open("sprites/tanks/" + i + "/0.png").resize((size, size), Image.NONE))), [3, 1, 1], size))
+		enemyTanks[ii].append(applyMask(surfaceImage(Image.open("sprites/tanks/" + i + "/1.png").resize((size, size), Image.NONE)), [3, 1, 1], size))
+		ii += 1
+	ii = 0
+	for i in tankTypes:
 		tanks.append([])
 		tanks[ii].append(surfaceImage(Image.open("sprites/tanks/" + i + "/0.png").resize((size, size), Image.NONE)))
 		tanks[ii].append(surfaceImage(ImageOps.mirror(Image.open("sprites/tanks/" + i + "/1.png").resize((size, size), Image.NONE))))
@@ -165,7 +174,7 @@ def loadImages():
 
 	bullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((size, size), Image.NONE))
 
-	return forest, desert, ice, dungeon, tanks, treads, bullet
+	return forest, desert, ice, dungeon, tanks, enemyTanks, treads, bullet
 
 
 # Returns the image data of a room, and the position data of layers
