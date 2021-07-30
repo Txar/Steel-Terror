@@ -153,10 +153,10 @@ def loadImages():
 	ii = 0
 	for i in tankTypes:
 		enemyTanks.append([])
-		enemyTanks[ii].append(applyMask(surfaceImage(Image.open("sprites/tanks/" + i + "/0.png").resize((size, size), Image.NONE)), [3, 1, 1], size))
-		enemyTanks[ii].append(applyMask(surfaceImage(ImageOps.mirror(Image.open("sprites/tanks/" + i + "/1.png").resize((size, size), Image.NONE))), [3, 1, 1], size))
-		enemyTanks[ii].append(applyMask(surfaceImage(ImageOps.flip(Image.open("sprites/tanks/" + i + "/0.png").resize((size, size), Image.NONE))), [3, 1, 1], size))
-		enemyTanks[ii].append(applyMask(surfaceImage(Image.open("sprites/tanks/" + i + "/1.png").resize((size, size), Image.NONE)), [3, 1, 1], size))
+		enemyTanks[ii].append(applyMask(surfaceImage(Image.open("sprites/tanks/" + i + "/0.png").resize((size, size), Image.NONE)), [2, 1, 1], size))
+		enemyTanks[ii].append(applyMask(surfaceImage(ImageOps.mirror(Image.open("sprites/tanks/" + i + "/1.png").resize((size, size), Image.NONE))), [2, 1, 1], size))
+		enemyTanks[ii].append(applyMask(surfaceImage(ImageOps.flip(Image.open("sprites/tanks/" + i + "/0.png").resize((size, size), Image.NONE))), [2, 1, 1], size))
+		enemyTanks[ii].append(applyMask(surfaceImage(Image.open("sprites/tanks/" + i + "/1.png").resize((size, size), Image.NONE)), [2, 1, 1], size))
 		ii += 1
 	ii = 0
 	for i in tankTypes:
