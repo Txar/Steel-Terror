@@ -125,7 +125,7 @@ def loadScreen(wd, hd):
 
 # Load all image data
 def loadImages():
-	global size, forest, water, tanks, bullet
+	global size, forest, water, tanks, bullet, duck
 
 	water = []
 
@@ -173,6 +173,7 @@ def loadImages():
 			treads[i - 1].append(surfaceImage(Image.open("sprites/tanks/treads/tread" + str(i) + str(j) +".png").resize((size, size), Image.NONE)))
 
 	bullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((size, size), Image.NONE))
+	duck = surfaceImage(Image.open("sprites/pets/duck.png").resize((size, size), Image.NONE))
 
 	return forest, desert, ice, dungeon, tanks, enemyTanks, treads, bullet
 
@@ -297,3 +298,7 @@ def blitPacks(healthPacks, ammoPacks, screen):
 		screen.blit(heart, (centerPos[0] + i[0] * size - size // 2, centerPos[1] + i[1] * size - size // 2))
 	for i in ammoPacks:
 		screen.blit(bullet, (centerPos[0] + i[0] * size - size // 2, centerPos[1] + i[1] * size - size // 2))
+
+def blitPet(petxy, screen):
+	global centerPos, size
+	screen.blit(eval(petxy[2]), (centerPos[0] + petxy[0] * size - size // 2, centerPos[1] + petxy[1] * size - size // 2))

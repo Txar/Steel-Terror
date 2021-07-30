@@ -18,6 +18,7 @@ clock = time.Clock()
 
 playerSpeed = 2.5
 playerxy = [0.5, 0.5, 0]
+petxy = [0, 0, "duck"]
 health = 3
 healthPacks = [] #[x, y]
 ammoPacks = [] #[x, y]
@@ -26,7 +27,7 @@ bullets = [] #[bullet x, bullet y, bullet direction, bullet distance to move, 0 
 enemies = [] #[x, y, direction, tank type, distance to move, ticks since the last shot, how many times travel the "distance to move"]
 tankStats = [1, [2.5, 4.5, 2.0, 0, 0], [3.7, 6.5, 2.7, 1, 0], [1.2, 5.5, 1.0, 2, 1], [3.1, 5.5, 0.8, 3, 1]] #tank type used currently, [speed, bullet speed, shooting cooldown, sprite, tracks sprite]
 
-biome = ice
+biome = forest
 room = open("rooms/{0}.room".format(randint(0, 119)), "r")
 
 display.toggle_fullscreen()
@@ -86,6 +87,7 @@ while 1:
 		if keys[K_s] and not uu: playerxy[2], uu = 2, 1
 		if not uu: distanceToMove = 0
 		playerxy = checkPlayerCollisions(playerxy, distanceToMove, wholeRoomData, enemies)
+		movePet(petxy, playerxy)
 		bullets = moveBullets(bullets)
 		health, ammo, healthPacks, ammoPacks = pickupPacks(health, ammo, healthPacks, ammoPacks, playerxy)
 		bullets, wholeRoomData, breakableData, enemies, health, healthPacks, ammoPacks = checkBulletCollisions(bullets, wholeRoomData, breakableData, playerxy, enemies, health, healthPacks, ammoPacks)
@@ -100,6 +102,8 @@ while 1:
 		blitBlock(blockData, biome, screen)
 		blitBreakBlock(breakableData, biome, screen)
 		blitBush(bushData, biome, screen)
+		blitPet(petxy, screen)
+		print(petxy)
 
 		blitHealth(screen, health, size)
 		blitAmmo(screen, ammo, size, scw - 120, 5, ff)
