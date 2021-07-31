@@ -67,7 +67,7 @@ mapPos = [10, 10]
 
 data, waterData, bushData, blockData, breakableData, wholeRoomData, biome = mapMap[mapPos[0]][mapPos[1]]
 enemiesToAdd = addEnemies(diffMap[mapPos[0]][mapPos[1]])
-print(len(enemiesToAdd))
+
 globals().update(locals())
 
 menu = True
@@ -190,6 +190,7 @@ while 1:
 		blitBlock(blockData, biome, screen)
 		blitBreakBlock(breakableData, biome, screen)
 		blitBush(bushData, biome, screen)
+		if len(enemies) + len(enemiesToAdd) != 0: blitFrame(screen, biome)
 		blitPet(petxy, playerxy, screen)
 
 		if(ammo != prevAmmo):

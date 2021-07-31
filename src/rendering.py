@@ -130,7 +130,7 @@ def loadScreen(wd, hd):
 
 # Load all image data
 def loadImages():
-	global size, forest, water, tanks, bullet, duck0, duck1, none0, none1, snek0, snek1
+	global size, forest, ice, dungeon, desert, water, tanks, bullet, duck0, duck1, none0, none1, snek0, snek1
 
 	water = []
 
@@ -238,6 +238,13 @@ def blitRoom(data, screen, ox = 0, oy = 0):
 		for j in range(len(data[0])):
 			if data[i][j] == None: continue
 			screen.blit(data[i][j], (centerPos[0] + size * j + ox * size, centerPos[1] + size * i + oy * size))
+
+def blitFrame(screen, biome):
+	global size, centerPos
+	for i in range(-1, 21):
+		for j in range(-1, 17):
+			if j == -1 or j == 16 or i == -1 or i == 20:
+				screen.blit(biome[1], (centerPos[0] + size * i, centerPos[1] + size * j))
 
 # Animate water with data as positions, t is ticks
 def blitWater(waterData, screen, t, ox = 0, oy = 0):
