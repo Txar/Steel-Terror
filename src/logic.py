@@ -279,9 +279,7 @@ def movePet(petxy, playerxy):
 
 def addEnemies(difficulty):
 	enemiesToAdd = []
-	if difficulty == 0:
-		enemiesToAdd.append([0, False])
-	elif difficulty == 1:
+	if difficulty == 1:
 		for i in range(0, randint(7, 15)): enemiesToAdd.append([0, False])
 		for i in range(0, randint(0, 3)): enemiesToAdd.append([1, False])
 	elif difficulty == 2:

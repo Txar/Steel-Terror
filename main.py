@@ -40,6 +40,7 @@ biomeDict = {
 mapSize = 20
 
 mapList = generateMap(mapSize, 4)
+diffMap = generateDiffMap(mapList, mapSize)
 
 mapMap = []
 for i in range(mapSize):
@@ -61,11 +62,11 @@ for i in range(mapSize):
 
 display.toggle_fullscreen()
 
-mapPos = [6, 6]
+mapPos = [10, 10]
 
 data, waterData, bushData, blockData, breakableData, wholeRoomData, biome = mapMap[mapPos[0]][mapPos[1]]
-enemiesToAdd = addEnemies(0)
-
+enemiesToAdd = addEnemies(diffMap[mapPos[0]][mapPos[1]])
+print(len(enemiesToAdd))
 globals().update(locals())
 
 menu = True
@@ -76,8 +77,12 @@ deltaTime = 0
 lastTicks = 0
 
 bullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((8 * size, 8 * size), Image.NONE))
-buttSurface = surfaceNinepatch("sprites/ui/colorButton.9.png", 10 + int(len(str(ammo)) * 2), 9, size)
 heart = surfaceImage(Image.open("sprites/ui/heart.png").resize((4 * size, 4 * size), Image.NONE))
+tank = surfaceImage(Image.open("sprites/ui/tank.png").resize((8 * size, 8 * size), Image.NONE))
+buttSurface = surfaceNinepatch("sprites/ui/colorButton.9.png", 16, 9, size)
+
+prevAmmo = 99999999999999999
+cc = 0
 
 while 1:
 	ee = event.get()
@@ -123,8 +128,27 @@ while 1:
 		if not uu: distanceToMove = 0
 		playerxy = checkPlayerCollisions(playerxy, distanceToMove, wholeRoomData, enemies)
 
-		if playerxy[0] < 0.5 and len(enemiesToAdd) == 0:
+		if playerxy[0] < 0.5 and mapList[mapPos[0] - 1][mapPos[1]] != 0 and len(enemies) == 0 and len(enemiesToAdd) == 0:
 			mapPos = [mapPos[0] - 1, mapPos[1]]
+			cc = 1
+
+		if playerxy[0] > 20 * size and mapList[mapPos[0] + 1][mapPos[1]] != 0 and len(enemies) == 0 and len(enemiesToAdd) == 0:
+			mapPos = [mapPos[0] + 1, mapPos[1]]
+			cc = 1
+
+		if playerxy[1] < 0.5 and mapList[mapPos[0]][mapPos[1] - 1] != 0 and len(enemies) == 0 and len(enemiesToAdd) == 0:
+			mapPos = [mapPos[0], mapPos[1] - 1]
+			cc = 1
+
+		if playerxy[0] > 16 * size and mapList[mapPos[0]][mapPos[1] + 1] != 0 and len(enemies) == 0 and len(enemiesToAdd) == 0:
+			mapPos = [mapPos[0], mapPos[1] + 1]
+			cc = 1
+
+		if cc:
+			data, waterData, bushData, blockData, breakableData, wholeRoomData, biome = mapMap[mapPos[0]][mapPos[1]]
+			enemiesToAdd = addEnemies(diffMap[mapPos[0]][mapPos[1]])
+
+			cc = 0
 
 		movePet(petxy, playerxy)
 		bullets = moveBullets(bullets)
@@ -134,7 +158,12 @@ while 1:
 		moveEnemies(enemies, wholeRoomData, fps, tankStats, playerxy)
 		if spawnCooldown == 0:
 			spawnCooldown = randint(120, 720)
-			h = randint(0, len(enemiesToAdd))
+
+			if(len(enemiesToAdd) <= 1):
+				h = 0
+			else:
+				h = randint(0, len(enemiesToAdd) - 1)
+
 			if len(enemiesToAdd) > 0:
 				if len(enemiesToAdd[h]) > 0:
 					spreadEnemy(enemies, wholeRoomData, enemiesToAdd[h][0], playerxy)
@@ -157,13 +186,18 @@ while 1:
 		blitBush(bushData, biome, screen)
 		blitPet(petxy, playerxy, screen)
 
+		if(ammo != prevAmmo):
+			bulletButtSurface = surfaceNinepatch("sprites/ui/colorButton.9.png", 11 + int(len(str(ammo)) * 2), 9, size)
 
 		blitHealth(screen, health, size, heart)
-		blitAmmo(screen, ammo, size, scw - 20 * size, size, ff, bullet, buttSurface)
+		blitAmmo(screen, ammo, size, scw - 20 * size, size, ff, bullet, bulletButtSurface)
+		blitTanks(screen, len(enemiesToAdd) + len(enemies), size, scw - 40 * size, size, ff, tank, buttSurface)
 
 		ti = time.get_ticks()
 		deltaTime = (ti - lastTicks) / 1000
 		lastTicks = ti
+
+		prevAmmo = ammo
 
 		t += deltaTime * 60
 		t %= 360

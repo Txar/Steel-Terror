@@ -3,17 +3,18 @@ from random import *
 from perlin_noise import PerlinNoise
 import os
 
-def stringMap(l):
+def stringMap(l, u = False):
 	o = ""
 	for i in l:
 		for j in i:
 			o += str(j)
+			if u: o += " "
 		o += "\n"
 
 	return o
 
 def printMap(l):
-	print(stringMap(l))
+	print(stringMap(l, True))
 
 def dist(x, y, x2, y2):
 	return sqrt(abs(x - x2) ** 2 + abs(y - y2) ** 2)
@@ -157,6 +158,25 @@ def generateMap(size, dungeons):
 				newMapList[i][j] = 4
 
 	return newMapList
+
+def generateDiffMap(mapMap, mapSize):
+	h = []
+
+	for i in range(mapSize):
+		h.append([])
+
+		for j in range(mapSize):
+			q = mapMap[i][j]
+			if int(q) == 5:
+				h[i].append(randint(5, 7))
+			elif int(q) == 0:
+				h[i].append(0)
+			else:
+				h[i].append(randint(1, 4))
+
+	h[mapSize // 2][mapSize // 2] = 1
+
+	return h
 
 # One-time process, takes a long time
 def generateRooms(dir = "../rooms"):

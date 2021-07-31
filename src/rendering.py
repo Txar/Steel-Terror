@@ -73,6 +73,13 @@ def blitAmmo(screen, ammo, size, x, y, f, bullet, buttSurface):
 	screen.blit(bullet, (x, y))
 	screen.blit(textSurface, (x + 6 * size, y + 3 * size))
 
+def blitTanks(screen, tanks, size, x, y, f, tank, buttSurface):
+	textSurface = f.render("x" + str(tanks), False, (0, 0, 0))
+
+	screen.blit(buttSurface, (x, y))
+	screen.blit(tank, (x, y))
+	screen.blit(textSurface, (x + 7 * size, y + 3 * size))
+
 # a = value, ra = dimension, ts = tile size
 def calculateSize(a, ra, ts):
 	preValue = a
