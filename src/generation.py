@@ -174,7 +174,7 @@ def generateDiffMap(mapMap, mapSize):
 			else:
 				h[i].append(randint(1, 4))
 
-	h[mapSize // 2][mapSize // 2] = 1
+	h[mapSize // 2][mapSize // 2] = 0
 
 	return h
 

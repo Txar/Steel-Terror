@@ -130,18 +130,23 @@ while 1:
 
 		if playerxy[0] < 0.5 and mapList[mapPos[0] - 1][mapPos[1]] != 0 and len(enemies) == 0 and len(enemiesToAdd) == 0:
 			mapPos = [mapPos[0] - 1, mapPos[1]]
+			playerxy[0] = 19.5
 			cc = 1
 
-		if playerxy[0] > 20 * size and mapList[mapPos[0] + 1][mapPos[1]] != 0 and len(enemies) == 0 and len(enemiesToAdd) == 0:
+		if playerxy[0] > 19.5 and mapList[mapPos[0] + 1][mapPos[1]] != 0 and len(enemies) == 0 and len(enemiesToAdd) == 0:
 			mapPos = [mapPos[0] + 1, mapPos[1]]
+			playerxy[0] = 0.5
 			cc = 1
 
 		if playerxy[1] < 0.5 and mapList[mapPos[0]][mapPos[1] - 1] != 0 and len(enemies) == 0 and len(enemiesToAdd) == 0:
 			mapPos = [mapPos[0], mapPos[1] - 1]
+			playerxy[1] = 15.5
 			cc = 1
 
-		if playerxy[0] > 16 * size and mapList[mapPos[0]][mapPos[1] + 1] != 0 and len(enemies) == 0 and len(enemiesToAdd) == 0:
+
+		if playerxy[1] > 15.5 and mapList[mapPos[0]][mapPos[1] + 1] != 0 and len(enemies) == 0 and len(enemiesToAdd) == 0:
 			mapPos = [mapPos[0], mapPos[1] + 1]
+			playerxy[1] = 0.5
 			cc = 1
 
 		if cc:
