@@ -184,7 +184,6 @@ while 1:
 		blitWater(waterData, screen, floor(t))
 		blitPacks(healthPacks, ammoPacks, screen, heart, bullet)
 		blitPlayer(playerxy, [tanks[tankSprite], treads[tankTrackSprite]], screen, t / 5, uu)
-		blitBoss(screen)
 		blitEnemies(enemies, screen, t, tankStats, [enemyTanks, treads])
 		blitBullets(bullets, screen)
 		blitBlock(blockData, biome, screen)
