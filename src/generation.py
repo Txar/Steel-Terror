@@ -144,7 +144,7 @@ def generateMap(size, dungeons):
 			x = randint(0, w - 1)
 			y = randint(0, h - 1)
 
-			if mapList[y][x] != 0:
+			if mapList[y][x] != 0 and mapList[y][x] != 5:
 				mapList[y][x] = 5
 				break
 

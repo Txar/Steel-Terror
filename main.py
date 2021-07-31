@@ -42,7 +42,6 @@ mapSize = 20
 mapList = generateMap(mapSize, 4)
 diffMap = generateDiffMap(mapList, mapSize)
 
-printMap(diffMap)
 mapMap = []
 for i in range(mapSize):
 	mapMap.append([])
