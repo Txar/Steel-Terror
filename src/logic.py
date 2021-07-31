@@ -129,7 +129,6 @@ def spreadEnemy(enemies, wholeRoomData, tt, playerxy):
 			usedTile = usableTiles[g]
 			break
 	if ticksi < 360: spawnEnemy(enemies, usedTile[1] + 0.5, usedTile[0] + 0.5, tt)
-	else: print("e")
 
 def roundTo8(x, base = 8):
 	return int(base * math.ceil(float(x) / base) - 8)
