@@ -163,7 +163,7 @@ while 1:
 		enemies, bullets = shootEnemies(enemies, bullets, wholeRoomData, tankStats, fps, playerxy)
 		moveEnemies(enemies, wholeRoomData, fps, tankStats, playerxy)
 		if spawnCooldown == 0:
-			spawnCooldown = randint(120, 720)
+			spawnCooldown = randint(60, 240)
 
 			if(len(enemiesToAdd) <= 1):
 				h = 0
@@ -185,6 +185,7 @@ while 1:
 		blitWater(waterData, screen, floor(t))
 		blitPacks(healthPacks, ammoPacks, screen, heart, bullet)
 		blitPlayer(playerxy, [tanks[tankSprite], treads[tankTrackSprite]], screen, t / 5, uu)
+		blitBoss(screen)
 		blitEnemies(enemies, screen, t, tankStats, [enemyTanks, treads])
 		blitBullets(bullets, screen)
 		blitBlock(blockData, biome, screen)
