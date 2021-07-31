@@ -168,11 +168,11 @@ def generateDiffMap(mapMap, mapSize):
 		for j in range(mapSize):
 			q = mapMap[i][j]
 			if int(q) == 5:
-				h[i].append(randint(5, 7))
+				h[i].append(randint(6, 7))
 			elif int(q) == 0:
 				h[i].append(0)
 			else:
-				h[i].append(randint(1, 4))
+				h[i].append(int(min(dist(j, i, mapSize // 2, mapSize // 2), 5) + randint(-1, 1)))
 
 	h[mapSize // 2][mapSize // 2] = 0
 
