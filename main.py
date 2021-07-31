@@ -39,10 +39,10 @@ biomeDict = {
 
 mapSize = 20
 
-mapList = generateMap(mapSize, 4)
+mapList = generateMap(mapSize, 20)
 diffMap = generateDiffMap(mapList, mapSize)
 
-printMap(diffMap)
+printMap(mapList)
 mapMap = []
 for i in range(mapSize):
 	mapMap.append([])
