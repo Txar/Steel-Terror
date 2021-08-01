@@ -22,7 +22,7 @@ clock = time.Clock()
 
 playerSpeed = 2.5
 playerxy = [0.5, 0.5, 0]
-petxy = [0, 0, "snek"] #none, duck, snek
+petxy = [0, 0, "none"] #none, duck, snek
 health = 3
 healthPacks = [] #[x, y]
 ammoPacks = [] #[x, y]
@@ -46,6 +46,15 @@ mapSize = 20
 
 mapList = generateMap(mapSize, 4)
 diffMap = generateDiffMap(mapList, mapSize)
+compMap = []
+
+for i in range(mapSize):
+	compMap.append([])
+	for j in range(mapSize):
+		if int(mapList[i][j]) == 0:
+			compMap[i].append(1)
+		else:
+			compMap[i].append(0)
 
 mapMap = []
 for i in range(mapSize):
@@ -79,6 +88,8 @@ game = False
 colors = False
 
 colorList = [[1, 1, 2], [1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 0, 1], [0.5, 0.2, 0.5], [0, 1, 1], [1, 1, 0], [1, 1, 1], [0.5, 0.5, 0.5]]
+petList = ["none", "snek", "duck"]
+tankList = ["default", "fast", "strong", "epic"]
 lockedColors = [0, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 lockedPets = [0, 1, 1]
 lockedTanks = [0, 1, 1, 1]
@@ -93,6 +104,9 @@ heart = surfaceImage(Image.open("sprites/ui/heart.png").resize((4 * size, 4 * si
 tank = surfaceImage(Image.open("sprites/ui/tank.png").resize((8 * size, 8 * size), Image.NONE))
 buttSurface = surfaceNinepatch("sprites/ui/colorButton.9.png", 16, 9, size)
 colorsButtonThing = surfaceNinepatch("sprites/ui/button.9.png", int(size * 10.8), int(size * 4.8), size)
+colorsButtonThing2 = surfaceNinepatch("sprites/ui/button.9.png", int(size * 10.8), int(size * 2.8), size)
+lock = surfaceImage(Image.open("sprites/ui/lock.png").resize((size * 8, size * 8), Image.NONE))
+gLock = surfaceImage(Image.open("sprites/ui/goldenLock.png").resize((size * 8, size * 8), Image.NONE))
 
 prevAmmo = 99999999999999999
 cc = 0
@@ -108,7 +122,7 @@ blitWater(waterData, screen, floor(t))
 blitBlock(blockData, biome, screen)
 blitBreakBlock(breakableData, biome, screen)
 blitBush(bushData, biome, screen)
-
+eeeeee = False
 while 1:
 	ee = event.get()
 
@@ -150,10 +164,16 @@ while 1:
 				blitBush(bushData, biome, screen)
 				menu = False
 				colors = True
+				eeeeee = True
 
 	if colors:
-		screen.blit(colorsButtonThing, (scw // 2 - int(size * 22), sch // 2 - size * 12))
-		colorr = blitColors(screen, mouse, size, scw // 2 - int(size * 6 * 2.5), sch // 2 - size * 5, colorList, mask, lockedColors)
+		screen.blit(colorsButtonThing, (scw // 2 - int(size * 22), sch // 2 - size * 12 - int(size * 10)))
+		screen.blit(colorsButtonThing2, (scw // 2 - int(size * 22), sch // 2 - size * 12 + int(size * 20)))
+		screen.blit(colorsButtonThing2, (scw // 2 - int(size * 22), sch // 2 - size * 12 + int(size * 40)))
+		
+		colorr = blitColors(screen, mouse, size, scw // 2 - int(size * 6 * 2.5), sch // 2 - size * 15, colorList, mask, lockedColors, lock)
+		pett = blitPets(screen, mouse, size, scw // 2 - int(size * 6 * 2.5), sch // 2 + size * 15, petList, petxy[2], lockedPets, gLock)
+		tankk = blitTankss(screen, mouse, size, scw // 2 - int(size * 6 * 2.5), sch // 2 + size * 35, tankList, tankList[tankStats[0]], lockedTanks, gLock)
 		blitAmmo(screen, ammo, size, scw - 20 * size, size, ff, bullet, surfaceNinepatch("sprites/ui/colorButton.9.png", 11 + int(len(str(ammo)) * 2), 9, size))
 		for e in ee:
 			if e.type == QUIT:
@@ -173,13 +193,26 @@ while 1:
 					blitBush(bushData, biome, screen)
 					colors = False
 					menu = True
-			if e.type == MOUSEBUTTONDOWN and colorr != None:
-				if not lockedColors[colorList.index(colorr)]:
-					mask = colorr
-				elif ammo >= 20:
-					ammo -= 20
-					mask = colorr
-					lockedColors[colorList.index(colorr)] = 0
+			if e.type == MOUSEBUTTONDOWN and not eeeeee:
+				if colorr != None:
+					if not lockedColors[colorList.index(colorr)]:
+						mask = colorr
+					elif ammo >= 20:
+						ammo -= 20
+						mask = colorr
+						lockedColors[colorList.index(colorr)] = 0
+				if pett != None:
+					if not lockedPets[petList.index(pett)]:
+						petxy[2] = pett
+					""" enable this to enable buying
+					elif ammo >= 500:
+						ammo -= 500
+						petxy[2] = pett
+						lockedPets[petList.index(pett)] = 0"""
+				if tankk != None:
+					if not lockedTanks[tankList.index(tankk)]:
+						tankStats[0] = tankList.index(tankk)
+		eeeeee = False
 
 	if game:
 		dd = len(bullets)
@@ -222,6 +255,7 @@ while 1:
 		if not uu: distanceToMove = 0
 		playerxy = checkPlayerCollisions(playerxy, distanceToMove, wholeRoomData, enemies)
 
+		prevMapPos = mapPos
 		if playerxy[0] < 0.5 and mapList[mapPos[0] - 1][mapPos[1]] != 0 and len(enemies) == 0 and len(enemiesToAdd) == 0:
 			mapPos = [mapPos[0] - 1, mapPos[1]]
 			playerxy[0] = 19.5
@@ -243,8 +277,10 @@ while 1:
 			cc = 1
 
 		if cc:
+			compMap[prevMapPos[0]][prevMapPos[1]] = 1
 			data, waterData, bushData, blockData, breakableData, wholeRoomData, biome = mapMap[mapPos[0]][mapPos[1]]
-			enemiesToAdd = addEnemies(diffMap[mapPos[0]][mapPos[1]])
+			if compMap[mapPos[0]][mapPos[1]] == 0:
+				enemiesToAdd = addEnemies(diffMap[mapPos[0]][mapPos[1]])
 			healthPacks = []
 			ammoPacks = []
 			cc = 0

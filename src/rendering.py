@@ -70,14 +70,76 @@ def colorButton(screen, m, size, x, y, color, lit):
 
 	return None
 
-def blitColors(screen, m, size, x, y, colorList, color, lockedColors):
+def petButton(screen, m, size, x, y, pet, lit):
+	w, h = 10, 10
+	mx, my = m.get_pos()
+
+	if lit:
+		screen.blit(surfaceImage(Image.open("sprites/ui/petHighlight.png").resize((w * size, h * size), Image.NONE)), (x - (w // 2) * size, y - (h // 2) * size))
+
+	screen.blit(surfaceImage(Image.open("sprites/pets/" + pet + "0.png").resize((8 * size, 8 * size), Image.NONE)), (x - (8 // 2) * size, y - (8 // 2) * size))
+
+	if mx >= x  - (w // 2) * size and mx <= x + w * size  - (w // 2) * size and my >= y - (h // 2) * size and my <= y + h * size - (h // 2) * size:
+		return pet
+
+	return None
+
+def tankButton(screen, m, size, x, y, tank, lit):
+	w, h = 10, 10
+	mx, my = m.get_pos()
+
+	if lit:
+		screen.blit(surfaceImage(Image.open("sprites/ui/petHighlight.png").resize((w * size, h * size), Image.NONE)), (x - (w // 2) * size, y - (h // 2) * size))
+
+	screen.blit(surfaceImage(Image.open("sprites/tanks/" + tank + "/display.png").resize((8 * size, 8 * size), Image.NONE)), (x - (8 // 2) * size, y - (8 // 2) * size))
+
+	if mx >= x  - (w // 2) * size and mx <= x + w * size  - (w // 2) * size and my >= y - (h // 2) * size and my <= y + h * size - (h // 2) * size:
+		return tank
+
+	return None
+
+def blitColors(screen, m, size, x, y, colorList, color, lockedColors, lock):
 	xx = 0
 	yy = 0
 	o = None
 	ii = 0
 	for i in colorList:
 		value = colorButton(screen, m, size, xx + x, yy + y, i, color == i)
-		if lockedColors[ii]: screen.blit(surfaceImage(Image.open("sprites/ui/lock.png").resize((size * 8, size * 8), Image.NONE)), (xx + x - size * 4, yy + y - size * 4))
+		if lockedColors[ii]: screen.blit(lock, (xx + x - size * 4, yy + y - size * 4))
+		if value != None and o == None:
+			o = value
+		xx += 10 * size
+		if xx >= 50 * size:
+			xx = 0
+			yy += 10 * size
+		ii += 1
+	return o
+
+def blitPets(screen, m, size, x, y, petList, pet, lockedPets, lock):
+	xx = 0
+	yy = 0
+	o = None
+	ii = 0
+	for i in petList:
+		value = petButton(screen, m, size, xx + x, yy + y, i, pet == i)
+		if lockedPets[ii]: screen.blit(lock, (xx + x - size * 4, yy + y - size * 4))
+		if value != None and o == None:
+			o = value
+		xx += 10 * size
+		if xx >= 50 * size:
+			xx = 0
+			yy += 10 * size
+		ii += 1
+	return o
+
+def blitTankss(screen, m, size, x, y, tankList, tank, lockedTanks, lock):
+	xx = 0
+	yy = 0
+	o = None
+	ii = 0
+	for i in tankList:
+		value = tankButton(screen, m, size, xx + x, yy + y, i, tank == i)
+		if lockedTanks[ii]: screen.blit(lock, (xx + x - size * 4, yy + y - size * 4))
 		if value != None and o == None:
 			o = value
 		xx += 10 * size
