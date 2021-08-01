@@ -19,7 +19,7 @@ selectSound = mixer.Sound("sfx/select.wav")
 selectSound.set_volume(0.4)
 
 init()
-display.set_caption('Battle Big City')
+display.set_caption('Steel Terror')
 
 screen, size, scw, sch, centerPos = loadScreen(20, 16)
 forest, desert, ice, dungeon, tanks, enemyTanks, treads, bullet = loadImages()
