@@ -67,7 +67,7 @@ def spawnBullet(bullets, x, y, direction, bulletSpeed, fps, eop):
 	elif direction == 3: bullets.append([x + 0.51, y, direction, bulletSpeed/fps, eop])
 	return bullets
 
-def checkBulletCollisions(bullets, wholeRoomData, breakableData, playerxy, enemies, health, healthPacks, ammoPacks, rareLoot, lockedPets, lockedTanks):
+def checkBulletCollisions(hitSound, bullets, wholeRoomData, breakableData, playerxy, enemies, health, healthPacks, ammoPacks, rareLoot, lockedPets, lockedTanks):
 	bullets2, bullets3 = [], []
 	for i in range(0, len(bullets)):
 		x, y = int(bullets[i][0]), int(bullets[i][1])
@@ -104,6 +104,7 @@ def checkBulletCollisions(bullets, wholeRoomData, breakableData, playerxy, enemi
 		elif bullets[i][4] == 1:
 			if int(playerxy[0]) == x and int(playerxy[1]) == y:
 				health -= 1
+				hitSound.play()
 				k = 2
 				break
 			for j in range(0, len(enemies)):
@@ -114,6 +115,7 @@ def checkBulletCollisions(bullets, wholeRoomData, breakableData, playerxy, enemi
 
 		elif bullets[i][4] == 2 and int(playerxy[0]) == x and int(playerxy[1]) == y:
 			health -= 1
+			hitSound.play()
 			k = 2
 			break
 

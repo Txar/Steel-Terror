@@ -109,7 +109,7 @@ Codes:
 def generateMap(size, dungeons):
 	w = size
 	h = size
-	print(h)
+
 	# Creating biome noises
 	dNoise = PerlinNoise(octaves = 10, seed = randint(1, 50))
 	iNoise = PerlinNoise(octaves = 10, seed = randint(1, 50))

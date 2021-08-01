@@ -441,5 +441,4 @@ def blitHealthBars(enemies, screen):
 	global centerPos, size, healthBar
 	for i in enemies:
 		if i[-2] > 0:
-			print(int(13 * (i[8] / i[7])))
 			screen.blit(healthBar[int(13 * (i[8] / i[7]))], (centerPos[0] + (i[0] - 0.5) * size - size // 2, centerPos[1] + (i[1] - 0.5) * size - size // 2))

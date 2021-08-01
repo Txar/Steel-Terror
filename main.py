@@ -9,6 +9,10 @@ mixer.init()
 beep = mixer.Sound("sfx/hit.wav")
 bulletSound = mixer.Sound("sfx/bullet.wav")
 bulletSound.set_volume(0.4)
+hitSound = mixer.Sound("sfx/hit.wav")
+hitSound.set_volume(0.4)
+deathSound = mixer.Sound("sfx/enemyDeath.wav")
+deathSound.set_volume(0.4)
 
 init()
 display.set_caption('Battle Big City')
@@ -123,6 +127,7 @@ blitBlock(blockData, biome, screen)
 blitBreakBlock(breakableData, biome, screen)
 blitBush(bushData, biome, screen)
 eeeeee = False
+prevEnemies = -1
 while 1:
 	ee = event.get()
 
@@ -288,7 +293,7 @@ while 1:
 		movePet(petxy, playerxy)
 		bullets = moveBullets(bullets)
 		health, ammo, healthPacks, ammoPacks = pickupPacks(health, ammo, healthPacks, ammoPacks, playerxy)
-		bullets, wholeRoomData, breakableData, enemies, health, healthPacks, ammoPacks, rareLoot = checkBulletCollisions(bullets, wholeRoomData, breakableData, playerxy, enemies, health, healthPacks, ammoPacks, rareLoot, lockedPets, lockedTanks)
+		bullets, wholeRoomData, breakableData, enemies, health, healthPacks, ammoPacks, rareLoot = checkBulletCollisions(hitSound, bullets, wholeRoomData, breakableData, playerxy, enemies, health, healthPacks, ammoPacks, rareLoot, lockedPets, lockedTanks)
 		enemies, bullets = shootEnemies(enemies, bullets, wholeRoomData, tankStats, fps, playerxy)
 		moveEnemies(enemies, wholeRoomData, fps, tankStats, playerxy)
 		if spawnCooldown == 0:
@@ -328,7 +333,10 @@ while 1:
 		if(ammo != prevAmmo):
 			bulletButtSurface = surfaceNinepatch("sprites/ui/colorButton.9.png", 11 + int(len(str(ammo)) * 2), 9, size)
 
+		if(len(enemies) < prevEnemies):
+			deathSound.play()
 
+		prevEnemies = len(enemies)
 		blitHealth(screen, health, size, heart)
 		blitAmmo(screen, ammo, size, scw - 20 * size, size, ff, bullet, bulletButtSurface)
 		blitTanks(screen, len(enemiesToAdd) + len(enemies), size, scw - 40 * size, size, ff, tank, buttSurface)
