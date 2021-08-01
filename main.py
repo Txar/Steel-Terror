@@ -351,9 +351,10 @@ while 1:
 			game = False
 			menu = True
 			eDeathSound.play()
-			ammo -= 100
-			if ammo < 0:
-				ammo = 0
+			ammo *= 0.4
+			ammo = int(ammo)
+			if ammo < 30:
+				ammo = 30
 			health = 3
 			screen.blit(Surface((scw, sch)), (0, 0))
 			for i in range(-1, 2):
