@@ -86,6 +86,7 @@ bullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((8 * size, 8
 heart = surfaceImage(Image.open("sprites/ui/heart.png").resize((4 * size, 4 * size), Image.NONE))
 tank = surfaceImage(Image.open("sprites/ui/tank.png").resize((8 * size, 8 * size), Image.NONE))
 buttSurface = surfaceNinepatch("sprites/ui/colorButton.9.png", 16, 9, size)
+colorsButtonThing = surfaceNinepatch("sprites/ui/button.9.png", int(size * 10.8), int(size * 4.8), size)
 
 prevAmmo = 99999999999999999
 cc = 0
@@ -145,7 +146,7 @@ while 1:
 				colors = True
 
 	if colors:
-		screen.blit(surfaceNinepatch("sprites/ui/button.9.png", int(size * 10.8), int(size * 4.8), size), (scw // 2 - int(size * 22), sch // 2 - size * 12))
+		screen.blit(colorsButtonThing, (scw // 2 - int(size * 22), sch // 2 - size * 12))
 		colorr = blitColors(screen, mouse, size, scw // 2 - int(size * 6 * 2.5), sch // 2 - size * 5, colorList, mask, lockedColors)
 
 		for e in ee:
