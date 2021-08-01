@@ -92,13 +92,13 @@ def checkBulletCollisions(hitSound, bullets, wholeRoomData, breakableData, playe
 								k = 2
 							else:
 								enemies.pop(j)
-								for y in range(3, 8): healthPacks.append([x + 0.5 + uniform(-0.2, 0.2), y + 0.5 + uniform(-0.2, 0.2)])
-								for y in range(30, 100): ammoPacks.append([x + 0.5 + uniform(-0.2, 0.2), y + 0.5 + uniform(-0.2, 0.2)])
-								if lockedTanks[1] == 1: rareLoot.append([x, y, 0])
-								elif lockedTanks[2] == 1: rareLoot.append([x, y, 1])
-								elif lockedPets[1] == 1: rareLoot.append([x, y, 2])
-								elif lockedTanks[3] == 1: rareLoot.append([x, y, 3])
-								elif lockedPets[2] == 1: rareLoot.append([x, y, 4])
+								for s in range(3, 8): healthPacks.append([x + 0.5 + uniform(-0.2, 0.2), y + 0.5 + uniform(-0.2, 0.2)])
+								for s in range(30, 100): ammoPacks.append([x + 0.5 + uniform(-0.2, 0.2), y + 0.5 + uniform(-0.2, 0.2)])
+								if lockedTanks[1] == 1: lockedTanks[1] = 0
+								elif lockedTanks[2] == 1: lockedTanks[2] = 0
+								elif lockedPets[1] == 1: lockedPets[1] = 0
+								elif lockedTanks[3] == 1: lockedTanks[3] = 0
+								elif lockedPets[2] == 1: lockedTanks[2] = 0
 								k = 2
 					break
 		elif bullets[i][4] == 1:
@@ -132,7 +132,7 @@ def checkBulletCollisions(hitSound, bullets, wholeRoomData, breakableData, playe
 			if int(bullets2[i][1]) == int(bullets2[j][1]) and int(bullets2[i][0]) == int(bullets2[j][0]) and bullets2[i] in bullets3 and bullets2[j] in bullets3:
 				bullets3.pop(bullets3.index(bullets2[i]))
 				bullets3.pop(bullets3.index(bullets2[j]))
-	return bullets3, wholeRoomData, breakableData, enemies, health, healthPacks, ammoPacks, rareLoot
+	return bullets3, wholeRoomData, breakableData, enemies, health, healthPacks, ammoPacks, lockedTanks, lockedPets
 
 def spawnEnemy(enemies, x, y, tt, j):
 	enemies.append([x, y, 1, tt, 0, 0, 0, j, j])
@@ -338,7 +338,6 @@ def addEnemies(difficulty):
 			enemiesToAdd.append([3, j])
 	if difficulty == 7:
 		if randint(0, 1) == 0:
-			0
-	j = randint(7, 11)
-	enemiesToAdd.append([3, j])
+			j = randint(7, 11)
+			enemiesToAdd.append([3, j])
 	return enemiesToAdd

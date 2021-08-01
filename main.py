@@ -32,7 +32,7 @@ clock = time.Clock()
 playerSpeed = 2.5
 playerxy = [0.5, 0.5, 0]
 petxy = [0, 0, "none"] #none, duck, snek
-health = 3
+health = 5
 healthPacks = [] #[x, y]
 ammoPacks = [] #[x, y]
 rareLoot = [] #[x, y, what is it] things: 0 = fast tank, 1 = fat tank, 2 = duck, 3 = epic tank, 4 = snek
@@ -96,7 +96,7 @@ menu = True
 game = False
 colors = False
 
-colorList = [[1, 1, 2], [1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 0, 1], [0.5, 0.2, 0.5], [0, 1, 1], [1, 1, 0], [1, 1, 1], [0.5, 0.5, 0.5]]
+colorList = [[1, 1, 2], [2, 1, 1], [1, 2, 1], [1, 2, 2], [2, 1, 2], [0.5, 0.2, 0.5], [2, 2, 1], [2, 1, 0], [1, 1, 1], [0.5, 0.5, 0.5]]
 petList = ["none", "snek", "duck"]
 tankList = ["default", "fast", "strong", "epic"]
 lockedColors = [0, 1, 1, 1, 1, 1, 1, 1, 1, 1]
@@ -241,8 +241,6 @@ while 1:
 					t2 = 0
 					spawnBullet(bullets, playerxy[0], playerxy[1], playerxy[2], playerBulletSpeed, fps, 0)
 					ammo -= 1
-				if e.key == K_f:
-					spreadEnemy(enemies, wholeRoomData, randint(0, 3), playerxy)
 				if e.key == K_ESCAPE and len(enemies) == 0 and len(enemiesToAdd) == 0:
 					screen.blit(Surface((scw, sch)), (0, 0))
 					for i in range(-1, 2):
@@ -292,14 +290,11 @@ while 1:
 
 		if cc:
 			compMap[prevMapPos[0]][prevMapPos[1]] = 1
-			if mapList[mapPos[0]][mapPos[1]] == 5:
-				mixer.music.load("music/song2.mp3")
-				mixer.music.play()
-			elif mapList[prevMapPos[0]][prevMapPos[1]] == 5:
-				mixer.music.load("music/song.mp3")
-				mixer.music.play()
+			if diffMap[mapPos[0]][mapPos[1]] > 4: mixer.music.queue("music/song2.mp3")
+			else: mixer.music.queue("music/song.mp3")
 			data, waterData, bushData, blockData, breakableData, wholeRoomData, biome = mapMap[mapPos[0]][mapPos[1]]
 			if compMap[mapPos[0]][mapPos[1]] == 0:
+				enemies = []
 				enemiesToAdd = addEnemies(diffMap[mapPos[0]][mapPos[1]])
 			healthPacks = []
 			ammoPacks = []
@@ -308,7 +303,7 @@ while 1:
 		movePet(petxy, playerxy)
 		bullets = moveBullets(bullets)
 		health, ammo, healthPacks, ammoPacks = pickupPacks(health, ammo, healthPacks, ammoPacks, playerxy)
-		bullets, wholeRoomData, breakableData, enemies, health, healthPacks, ammoPacks, rareLoot = checkBulletCollisions(hitSound, bullets, wholeRoomData, breakableData, playerxy, enemies, health, healthPacks, ammoPacks, rareLoot, lockedPets, lockedTanks)
+		bullets, wholeRoomData, breakableData, enemies, health, healthPacks, ammoPacks, lockedTanks, lockedPets = checkBulletCollisions(hitSound, bullets, wholeRoomData, breakableData, playerxy, enemies, health, healthPacks, ammoPacks, rareLoot, lockedPets, lockedTanks)
 		enemies, bullets = shootEnemies(enemies, bullets, wholeRoomData, tankStats, fps, playerxy)
 		moveEnemies(enemies, wholeRoomData, fps, tankStats, playerxy)
 		if spawnCooldown == 0:
@@ -334,6 +329,7 @@ while 1:
 
 		blitRoom(data, screen)
 		blitWater(waterData, screen, floor(t))
+		blitGoldenUnlocks(rareLoot, screen)
 		blitPacks(healthPacks, ammoPacks, screen, heart, bullet)
 		blitPlayer(playerxy, [tanks[tankSprite], treads[tankTrackSprite]], screen, t / 5, uu, mask)
 		blitEnemies(enemies, screen, t, tankStats, [enemyTanks, treads])
@@ -364,8 +360,11 @@ while 1:
 			ammo = int(ammo)
 			if ammo < 30:
 				ammo = 30
-			health = 3
+			health = 5
+			playerxy = [0.5, 0.5, 0]
+			mapPos = [10, 10]
 			screen.blit(Surface((scw, sch)), (0, 0))
+			enemiesToAdd = addEnemies(diffMap[mapPos[0]][mapPos[1]])
 			for i in range(-1, 2):
 				for j in range(-1, 2):
 					if j == 0 and i == 0: continue

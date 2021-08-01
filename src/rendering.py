@@ -223,7 +223,7 @@ def loadScreen(wd, hd):
 
 # Load all image data
 def loadImages():
-	global size, forest, ice, dungeon, desert, water, tanks, bullet, duck0, duck1, none0, none1, snek0, snek1, healthBar, enemyBullet, boss
+	global size, forest, ice, dungeon, desert, water, tanks, bullet, duck0, duck1, none0, none1, snek0, snek1, healthBar, enemyBullet, boss, goldenUnlock
 
 	water = []
 
@@ -289,6 +289,7 @@ def loadImages():
 	none1 = Surface((size, size), SRCALPHA)
 	snek0 = surfaceImage(Image.open("sprites/pets/snek0.png").resize((size, size), Image.NONE))
 	snek1 = surfaceImage(Image.open("sprites/pets/snek1.png").resize((size, size), Image.NONE))
+	goldenUnlock = surfaceImage(Image.open("sprites/ui/goldenUnlock.png").resize((int(size * 1.5), int(size * 1.5)), Image.NONE))
 
 	return forest, desert, ice, dungeon, tanks, enemyTanks, treads, bullet
 
@@ -442,3 +443,8 @@ def blitHealthBars(enemies, screen):
 	for i in enemies:
 		if i[-2] > 0:
 			screen.blit(healthBar[int(13 * (i[8] / i[7]))], (centerPos[0] + (i[0] - 0.5) * size - size // 2, centerPos[1] + (i[1] - 0.5) * size - size // 2))
+
+def blitGoldenUnlocks(rareLoot, screen):
+	global centerPos, size, goldenUnlock
+	for i in rareLoot:
+		screen.blit(goldenUnlock, (centerPos[0] + i[0] * size - size * 0.25, centerPos[1] + i[1] * size - size * 0.25))

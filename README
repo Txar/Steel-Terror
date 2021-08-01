@@ -1,0 +1,21 @@
+Controls:
+
+WASD - driving the tank
+SPACE - shooting
+ESC - getting back to menu (NOTE: you can't go back to the menu unless the sector you are in is cleared)
+
+Steel Terror is a simple game about driving a tank and destroying other tanks with it. Rarely, in a Dungeon stronger, Golden Tanks appear, so be careful out there. The danger of an encounter with the Golden Tank can reward you with a pet or a new tank for you to use, if you survive, so good luck.
+After defeating the Golden Tank, a reward unlocks in the shop.
+
+The map is randomly generated every time so that every run feels at least a little different.
+
+In the shop, golden locks can be unlocked only by defeating a Golden Tank, and the other ones (for colors) cost 20 bullets to unlock each.
+
+Have fun and thanks for playing! <3
+
+Discord nicks of the team:
+Txar#7471
+ThePythonGuy#1234
+
+GitHub:
+https://github.com/Txar/Steel-Terror
