@@ -13,6 +13,8 @@ hitSound = mixer.Sound("sfx/hit.wav")
 hitSound.set_volume(0.4)
 deathSound = mixer.Sound("sfx/enemyDeath.wav")
 deathSound.set_volume(0.4)
+eDeathSound = mixer.Sound("sfx/death.wav")
+eDeathSound.set_volume(0.4)
 selectSound = mixer.Sound("sfx/select.wav")
 selectSound.set_volume(0.4)
 
@@ -344,6 +346,25 @@ while 1:
 		blitHealth(screen, health, size, heart)
 		blitAmmo(screen, ammo, size, scw - 20 * size, size, ff, bullet, bulletButtSurface)
 		blitTanks(screen, len(enemiesToAdd) + len(enemies), size, scw - 40 * size, size, ff, tank, buttSurface)
+
+		if health <= 0:
+			game = False
+			menu = True
+			eDeathSound.play()
+			ammo -= 100
+			if ammo < 0:
+				ammo = 0
+			health = 3
+			screen.blit(Surface((scw, sch)), (0, 0))
+			for i in range(-1, 2):
+				for j in range(-1, 2):
+					if j == 0 and i == 0: continue
+					blitSurround(screen, t, i * 20, j * 16, mapMap[mapPos[0] + i][mapPos[1] + j])
+			blitRoom(data, screen)
+			blitWater(waterData, screen, floor(t))
+			blitBlock(blockData, biome, screen)
+			blitBreakBlock(breakableData, biome, screen)
+			blitBush(bushData, biome, screen)
 
 		ti = time.get_ticks()
 		deltaTime = (ti - lastTicks) / 1000
