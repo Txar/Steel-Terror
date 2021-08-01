@@ -136,6 +136,7 @@ while 1:
 	ee = event.get()
 
 	if menu:
+		button(screen, mouse, size, scw // 2, sch // 2 - 60 * size, 2, 2, "sprites/ui/colorButton.9.png", "sprites/ui/colorButton.9.png", "sprites/ui/title.png")
 		play = button(screen, mouse, size, scw // 2, sch // 2 - 15 * size, 2, 2, "sprites/ui/button.9.png", "sprites/ui/buttonPressed.9.png", "sprites/ui/play.png")
 		color = button(screen, mouse, size, scw // 2, sch // 2, 2, 2, "sprites/ui/button.9.png", "sprites/ui/buttonPressed.9.png", "sprites/ui/colors.png")
 		#no #settings = button(screen, mouse, size, scw // 2, sch // 2 + 15 * size, 2, 2, "sprites/ui/button.9.png", "sprites/ui/buttonPressed.9.png", "sprites/ui/settings.png")
