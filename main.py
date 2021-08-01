@@ -71,6 +71,10 @@ globals().update(locals())
 
 menu = True
 game = False
+colors = False
+
+colorList = [[1, 1, 2], [1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 0, 1], [0, 1, 1], [1, 1, 0], [1, 1, 1], [0.5, 0.2, 0.5], [0.5, 0.5, 0.5]]
+
 t = 0
 t2 = 0
 deltaTime = 0
@@ -84,6 +88,7 @@ buttSurface = surfaceNinepatch("sprites/ui/colorButton.9.png", 16, 9, size)
 prevAmmo = 99999999999999999
 cc = 0
 
+mask = colorList[0]
 while 1:
 	ee = event.get()
 
@@ -100,11 +105,28 @@ while 1:
 			if e.type == MOUSEBUTTONDOWN and play:
 				beep.play()
 				screen.blit(Surface((scw, sch)), (0, 0))
-				u = 1
+				menu = False
+				game = True
+			if e.type == MOUSEBUTTONDOWN and color:
+				beep.play()
+				screen.blit(Surface((scw, sch)), (0, 0))
+				menu = False
+				colors = True
 
-		if u:
-			menu = False
-			game = True
+	if colors:
+		colorr = blitColors(screen, mouse, size, scw // 2 - int(size * 5 * 2.5), sch // 2 - size * 5, colorList)
+
+		for e in ee:
+			if e.type == QUIT:
+				quit()
+				exit()
+			elif e.type == KEYDOWN:
+				if e.key == K_ESCAPE:
+					screen.blit(Surface((scw, sch)), (0, 0))
+					colors = False
+					menu = True
+			if e.type == MOUSEBUTTONDOWN and colorr != None:
+				mask = colorr
 
 	if game:
 		playerSpeed, playerBulletSpeed, playerShootCooldown, tankSprite, tankTrackSprite = tankStats[int(tankStats[0])+1]
@@ -183,7 +205,7 @@ while 1:
 		blitRoom(data, screen)
 		blitWater(waterData, screen, floor(t))
 		blitPacks(healthPacks, ammoPacks, screen, heart, bullet)
-		blitPlayer(playerxy, [tanks[tankSprite], treads[tankTrackSprite]], screen, t / 5, uu)
+		blitPlayer(playerxy, [tanks[tankSprite], treads[tankTrackSprite]], screen, t / 5, uu, mask)
 		blitEnemies(enemies, screen, t, tankStats, [enemyTanks, treads])
 		blitBullets(bullets, screen)
 		blitBlock(blockData, biome, screen)

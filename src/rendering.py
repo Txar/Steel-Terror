@@ -56,6 +56,31 @@ def button(screen, m, size, x, y, ox, oy, burl, pburl, turl):
 
 	return a
 
+def colorButton(screen, m, size, x, y, color):
+	w, h = 8, 8
+	mx, my = m.get_pos()
+
+	if mx >= x  - (w // 2) * size and mx <= x + w * size  - (w // 2) * size and my >= y - (h // 2) * size and my <= y + h * size - (h // 2) * size:
+		screen.blit(applyMask(surfaceImage(Image.open("sprites/ui/colorButton.png").resize((w * size, h * size), Image.NONE)), color, w * size), (x - (w // 2) * size, y - (h // 2) * size))
+		return color
+	else:
+		screen.blit(applyMask(surfaceImage(Image.open("sprites/ui/colorButtonPressed.png").resize((w * size, h * size), Image.NONE)), color, w * size), (x - (w // 2) * size, y - (h // 2) * size))
+		return None
+
+def blitColors(screen, m, size, x, y, colorList):
+	xx = 0
+	yy = 0
+	o = None
+	for i in colorList:
+		value = colorButton(screen, m, size, xx + x, yy + y, i)
+		if value != None and o == None:
+			o = value
+		xx += 10 * size
+		if xx >= 50 * size:
+			xx = 0
+			yy += 10 * size
+	return o
+
 def blitHealth(screen, health, size, heart):
 	x = 3 / 5
 	y = 0.4
@@ -268,7 +293,7 @@ def blitBreakBlock(breakableData, biome, screen, ox = 0, oy = 0):
 	for i in breakableData:
 		screen.blit(biome[2], (centerPos[0] + size * i[0] + ox * size, centerPos[1] + size * i[1] + oy * size))
 
-def blitPlayer(playerxy, tp, screen, t, moving):
+def blitPlayer(playerxy, tp, screen, t, moving, mask):
 	global size, centerPos
 
 	tankType = tp[0]
@@ -280,7 +305,7 @@ def blitPlayer(playerxy, tp, screen, t, moving):
 	g = size/2
 	tank = Surface((size, size), SRCALPHA, 32)
 	tank.blit(transform.rotate(treadType[tt % 2], playerxy[2] * 90), (0, 0))
-	tank.blit(applyMask(tankType[playerxy[2]], [1, 1, 2], size), (0, 0))
+	tank.blit(applyMask(tankType[playerxy[2]], mask, size), (0, 0))
 
 	screen.blit(tank, (centerPos[0] + size * playerxy[0] - g, centerPos[1] + size * playerxy[1] - g))
 
