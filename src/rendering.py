@@ -56,29 +56,35 @@ def button(screen, m, size, x, y, ox, oy, burl, pburl, turl):
 
 	return a
 
-def colorButton(screen, m, size, x, y, color):
+def colorButton(screen, m, size, x, y, color, lit):
 	w, h = 8, 8
 	mx, my = m.get_pos()
 
-	if mx >= x  - (w // 2) * size and mx <= x + w * size  - (w // 2) * size and my >= y - (h // 2) * size and my <= y + h * size - (h // 2) * size:
-		screen.blit(applyMask(surfaceImage(Image.open("sprites/ui/colorButton.png").resize((w * size, h * size), Image.NONE)), color, w * size), (x - (w // 2) * size, y - (h // 2) * size))
-		return color
-	else:
+	if lit:
 		screen.blit(applyMask(surfaceImage(Image.open("sprites/ui/colorButtonPressed.png").resize((w * size, h * size), Image.NONE)), color, w * size), (x - (w // 2) * size, y - (h // 2) * size))
-		return None
+	else:
+		screen.blit(applyMask(surfaceImage(Image.open("sprites/ui/colorButton.png").resize((w * size, h * size), Image.NONE)), color, w * size), (x - (w // 2) * size, y - (h // 2) * size))
 
-def blitColors(screen, m, size, x, y, colorList):
+	if mx >= x  - (w // 2) * size and mx <= x + w * size  - (w // 2) * size and my >= y - (h // 2) * size and my <= y + h * size - (h // 2) * size:
+		return color
+
+	return None
+
+def blitColors(screen, m, size, x, y, colorList, color, lockedColors):
 	xx = 0
 	yy = 0
 	o = None
+	ii = 0
 	for i in colorList:
-		value = colorButton(screen, m, size, xx + x, yy + y, i)
-		if value != None and o == None:
+		value = colorButton(screen, m, size, xx + x, yy + y, i, color == i)
+		if lockedColors[ii]: screen.blit(surfaceImage(Image.open("sprites/ui/lock.png").resize((size * 8, size * 8), Image.NONE)), (xx + x - size * 4, yy + y - size * 4))
+		if value != None and o == None and not lockedColors[ii]:
 			o = value
 		xx += 10 * size
 		if xx >= 50 * size:
 			xx = 0
 			yy += 10 * size
+		ii += 1
 	return o
 
 def blitHealth(screen, health, size, heart):

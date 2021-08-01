@@ -7,7 +7,9 @@ from random import *
 mixer.pre_init(44100, -16, 2, 1024)
 mixer.init()
 beep = mixer.Sound("sfx/hit.wav")
+
 init()
+display.set_caption('Battle Big City')
 
 screen, size, scw, sch, centerPos = loadScreen(20, 16)
 forest, desert, ice, dungeon, tanks, enemyTanks, treads, bullet = loadImages()
@@ -73,8 +75,8 @@ menu = True
 game = False
 colors = False
 
-colorList = [[1, 1, 2], [1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 0, 1], [0, 1, 1], [1, 1, 0], [1, 1, 1], [0.5, 0.2, 0.5], [0.5, 0.5, 0.5]]
-
+colorList = [[1, 1, 2], [1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 0, 1], [0.5, 0.2, 0.5], [0, 1, 1], [1, 1, 0], [1, 1, 1], [0.5, 0.5, 0.5]]
+lockedColors = [0, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 t = 0
 t2 = 0
 deltaTime = 0
@@ -89,6 +91,17 @@ prevAmmo = 99999999999999999
 cc = 0
 
 mask = colorList[0]
+screen.blit(Surface((scw, sch)), (0, 0))
+for i in range(-1, 2):
+	for j in range(-1, 2):
+		if j == 0 and i == 0: continue
+		blitSurround(screen, t, i * 20, j * 16, mapMap[mapPos[0] + i][mapPos[1] + j])
+blitRoom(data, screen)
+blitWater(waterData, screen, floor(t))
+blitBlock(blockData, biome, screen)
+blitBreakBlock(breakableData, biome, screen)
+blitBush(bushData, biome, screen)
+
 while 1:
 	ee = event.get()
 
@@ -105,16 +118,35 @@ while 1:
 			if e.type == MOUSEBUTTONDOWN and play:
 				beep.play()
 				screen.blit(Surface((scw, sch)), (0, 0))
+				for i in range(-1, 2):
+					for j in range(-1, 2):
+						if j == 0 and i == 0: continue
+						blitSurround(screen, t, i * 20, j * 16, mapMap[mapPos[0] + i][mapPos[1] + j])
+				blitRoom(data, screen)
+				blitWater(waterData, screen, floor(t))
+				blitBlock(blockData, biome, screen)
+				blitBreakBlock(breakableData, biome, screen)
+				blitBush(bushData, biome, screen)
 				menu = False
 				game = True
 			if e.type == MOUSEBUTTONDOWN and color:
 				beep.play()
 				screen.blit(Surface((scw, sch)), (0, 0))
+				for i in range(-1, 2):
+					for j in range(-1, 2):
+						if j == 0 and i == 0: continue
+						blitSurround(screen, t, i * 20, j * 16, mapMap[mapPos[0] + i][mapPos[1] + j])
+				blitRoom(data, screen)
+				blitWater(waterData, screen, floor(t))
+				blitBlock(blockData, biome, screen)
+				blitBreakBlock(breakableData, biome, screen)
+				blitBush(bushData, biome, screen)
 				menu = False
 				colors = True
 
 	if colors:
-		colorr = blitColors(screen, mouse, size, scw // 2 - int(size * 5 * 2.5), sch // 2 - size * 5, colorList)
+		screen.blit(surfaceNinepatch("sprites/ui/button.9.png", int(size * 10.8), int(size * 4.8), size), (scw // 2 - int(size * 22), sch // 2 - size * 12))
+		colorr = blitColors(screen, mouse, size, scw // 2 - int(size * 6 * 2.5), sch // 2 - size * 5, colorList, mask, lockedColors)
 
 		for e in ee:
 			if e.type == QUIT:
@@ -123,6 +155,15 @@ while 1:
 			elif e.type == KEYDOWN:
 				if e.key == K_ESCAPE:
 					screen.blit(Surface((scw, sch)), (0, 0))
+					for i in range(-1, 2):
+						for j in range(-1, 2):
+							if j == 0 and i == 0: continue
+							blitSurround(screen, t, i * 20, j * 16, mapMap[mapPos[0] + i][mapPos[1] + j])
+					blitRoom(data, screen)
+					blitWater(waterData, screen, floor(t))
+					blitBlock(blockData, biome, screen)
+					blitBreakBlock(breakableData, biome, screen)
+					blitBush(bushData, biome, screen)
 					colors = False
 					menu = True
 			if e.type == MOUSEBUTTONDOWN and colorr != None:
@@ -135,11 +176,29 @@ while 1:
 			if e.type == QUIT:
 				quit()
 				exit()
-			elif e.type == KEYDOWN and e.key == K_SPACE and t2 > fps*playerShootCooldown/2 and ammo > 0:
-				t2 = 0
-				spawnBullet(bullets, playerxy[0], playerxy[1], playerxy[2], playerBulletSpeed, fps, 0)
-				ammo -= 1
-			elif e.type == KEYDOWN and e.key == K_f: spreadEnemy(enemies, wholeRoomData, randint(0, 3), playerxy)
+			elif e.type == KEYDOWN:
+				if e.key == K_SPACE and t2 > fps*playerShootCooldown/2 and ammo > 0:
+					t2 = 0
+					spawnBullet(bullets, playerxy[0], playerxy[1], playerxy[2], playerBulletSpeed, fps, 0)
+					ammo -= 1
+				if e.key == K_f:
+					spreadEnemy(enemies, wholeRoomData, randint(0, 3), playerxy)
+				if e.key == K_ESCAPE and len(enemies) == 0 and len(enemiesToAdd) == 0:
+					screen.blit(Surface((scw, sch)), (0, 0))
+					for i in range(-1, 2):
+						for j in range(-1, 2):
+							if j == 0 and i == 0: continue
+							blitSurround(screen, t, i * 20, j * 16, mapMap[mapPos[0] + i][mapPos[1] + j])
+					blitRoom(data, screen)
+					blitWater(waterData, screen, floor(t))
+					blitBlock(blockData, biome, screen)
+					blitBreakBlock(breakableData, biome, screen)
+					blitBush(bushData, biome, screen)
+
+					game = False
+					menu = True
+
+		if not game: continue
 		keys = key.get_pressed()
 		distanceToMove = playerSpeed * deltaTime
 		uu = 0
@@ -164,7 +223,6 @@ while 1:
 			mapPos = [mapPos[0], mapPos[1] - 1]
 			playerxy[1] = 15.5
 			cc = 1
-
 
 		if playerxy[1] > 15.5 and mapList[mapPos[0]][mapPos[1] + 1] != 0 and len(enemies) == 0 and len(enemiesToAdd) == 0:
 			mapPos = [mapPos[0], mapPos[1] + 1]
