@@ -17,6 +17,7 @@ eDeathSound = mixer.Sound("sfx/death.wav")
 eDeathSound.set_volume(0.4)
 selectSound = mixer.Sound("sfx/select.wav")
 selectSound.set_volume(0.4)
+mixer.music.load("music/song.mp3")
 
 init()
 display.set_caption('Steel Terror')
@@ -132,6 +133,7 @@ blitBreakBlock(breakableData, biome, screen)
 blitBush(bushData, biome, screen)
 eeeeee = False
 prevEnemies = -1
+mixer.music.play()
 while 1:
 	ee = event.get()
 
@@ -290,6 +292,12 @@ while 1:
 
 		if cc:
 			compMap[prevMapPos[0]][prevMapPos[1]] = 1
+			if mapList[mapPos[0]][mapPos[1]] == 5:
+				mixer.music.load("music/song2.mp3")
+				mixer.music.play()
+			elif mapList[prevMapPos[0]][prevMapPos[1]] == 5:
+				mixer.music.load("music/song.mp3")
+				mixer.music.play()
 			data, waterData, bushData, blockData, breakableData, wholeRoomData, biome = mapMap[mapPos[0]][mapPos[1]]
 			if compMap[mapPos[0]][mapPos[1]] == 0:
 				enemiesToAdd = addEnemies(diffMap[mapPos[0]][mapPos[1]])
