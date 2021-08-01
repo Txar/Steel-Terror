@@ -147,7 +147,7 @@ while 1:
 	if colors:
 		screen.blit(surfaceNinepatch("sprites/ui/button.9.png", int(size * 10.8), int(size * 4.8), size), (scw // 2 - int(size * 22), sch // 2 - size * 12))
 		colorr = blitColors(screen, mouse, size, scw // 2 - int(size * 6 * 2.5), sch // 2 - size * 5, colorList, mask, lockedColors)
-
+		blitAmmo(screen, ammo, size, scw - 20 * size, size, ff, bullet, surfaceNinepatch("sprites/ui/colorButton.9.png", 11 + int(len(str(ammo)) * 2), 9, size))
 		for e in ee:
 			if e.type == QUIT:
 				quit()
@@ -167,7 +167,12 @@ while 1:
 					colors = False
 					menu = True
 			if e.type == MOUSEBUTTONDOWN and colorr != None:
-				mask = colorr
+				if not lockedColors[colorList.index(colorr)]:
+					mask = colorr
+				elif ammo >= 20:
+					ammo -= 20
+					mask = colorr
+					lockedColors[colorList.index(colorr)] = 0
 
 	if game:
 		playerSpeed, playerBulletSpeed, playerShootCooldown, tankSprite, tankTrackSprite = tankStats[int(tankStats[0])+1]

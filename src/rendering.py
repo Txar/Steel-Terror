@@ -78,7 +78,7 @@ def blitColors(screen, m, size, x, y, colorList, color, lockedColors):
 	for i in colorList:
 		value = colorButton(screen, m, size, xx + x, yy + y, i, color == i)
 		if lockedColors[ii]: screen.blit(surfaceImage(Image.open("sprites/ui/lock.png").resize((size * 8, size * 8), Image.NONE)), (xx + x - size * 4, yy + y - size * 4))
-		if value != None and o == None and not lockedColors[ii]:
+		if value != None and o == None:
 			o = value
 		xx += 10 * size
 		if xx >= 50 * size:
