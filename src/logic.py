@@ -100,7 +100,7 @@ def checkBulletCollisions(hitSound, bullets, wholeRoomData, breakableData, playe
 								elif lockedTanks[3] == 1: rareLoot.append([x, y, 3])
 								elif lockedPets[2] == 1: rareLoot.append([x, y, 4])
 								k = 2
-				break
+					break
 		elif bullets[i][4] == 1:
 			if int(playerxy[0]) == x and int(playerxy[1]) == y:
 				health -= 1
