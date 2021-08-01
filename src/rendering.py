@@ -161,7 +161,7 @@ def loadScreen(wd, hd):
 
 # Load all image data
 def loadImages():
-	global size, forest, ice, dungeon, desert, water, tanks, bullet, duck0, duck1, none0, none1, snek0, snek1
+	global size, forest, ice, dungeon, desert, water, tanks, bullet, duck0, duck1, none0, none1, snek0, snek1, healthBar, enemyBullet, boss
 
 	water = []
 
@@ -203,12 +203,24 @@ def loadImages():
 		tanks[ii].append(surfaceImage(Image.open("sprites/tanks/" + i + "/1.png").resize((size, size), Image.NONE)))
 		ii += 1
 
+	boss = []
+	bossColor = [2, 1, 0]
+	boss.append(applyMask(surfaceImage(Image.open("sprites/tanks/epic/0.png").resize((size, size), Image.NONE)), bossColor, size))
+	boss.append(applyMask(surfaceImage(ImageOps.mirror(Image.open("sprites/tanks/epic/1.png").resize((size, size), Image.NONE))), bossColor, size))
+	boss.append(applyMask(surfaceImage(ImageOps.flip(Image.open("sprites/tanks/epic/0.png").resize((size, size), Image.NONE))), bossColor, size))
+	boss.append(applyMask(surfaceImage(Image.open("sprites/tanks/epic/1.png").resize((size, size), Image.NONE)), bossColor, size))
+
 	for i in range(1, 3):
 		treads.append([])
 		for j in range(1, 3):
 			treads[i - 1].append(surfaceImage(Image.open("sprites/tanks/treads/tread" + str(i) + str(j) +".png").resize((size, size), Image.NONE)))
 
-	bullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((size, size), Image.NONE))
+	healthBar = []
+	for i in range(0, 14):
+		healthBar.append(surfaceImage(Image.open("sprites/ui/healthbar" + str(i) + ".png").resize((size * 2, size), Image.NONE)))
+
+	bullet = surfaceImage(Image.open("sprites/tanks/bullet1.png").resize((size, size), Image.NONE))
+	enemyBullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((size, size), Image.NONE))
 	duck0 = surfaceImage(Image.open("sprites/pets/duck0.png").resize((size, size), Image.NONE))
 	duck1 = surfaceImage(Image.open("sprites/pets/duck1.png").resize((size, size), Image.NONE))
 	none0 = Surface((size, size), SRCALPHA)
@@ -316,7 +328,7 @@ def blitPlayer(playerxy, tp, screen, t, moving, mask):
 	screen.blit(tank, (centerPos[0] + size * playerxy[0] - g, centerPos[1] + size * playerxy[1] - g))
 
 def blitEnemies(enemies, screen, t, tankStats, tp):
-	global size, centerPos
+	global size, centerPos, boss
 	tanks, treads = tp[0], tp[1]
 	g = size/2
 	for i in enemies:
@@ -324,14 +336,16 @@ def blitEnemies(enemies, screen, t, tankStats, tp):
 		if i[4] > 0: tt = int(t)
 		enemy = Surface((size, size), SRCALPHA, 32)
 		enemy.blit(transform.rotate(treads[tankStats[i[3] + 1][4]][tt % 2], i[2] * 90), (0, 0))
-		enemy.blit(tanks[i[3]][i[2]], (0, 0))
+		if i[-2] != 0: enemy.blit(boss[i[2]], (0, 0))
+		else: enemy.blit(tanks[i[3]][i[2]], (0, 0))
 		screen.blit(enemy, (centerPos[0] + size * i[0] - g, centerPos[1] + size * i[1] - g))
 
 def blitBullets(bullets, screen):
 	global bullet, size, centerPos
 	g = size/2
 	for i in bullets:
-		screen.blit(transform.rotate(bullet, i[2]*90), (centerPos[0] + size * i[0] - g, centerPos[1] + size * i[1] - g))
+		if i[4] == 0: screen.blit(transform.rotate(enemyBullet, i[2]*90), (centerPos[0] + size * i[0] - g, centerPos[1] + size * i[1] - g))
+		else: screen.blit(transform.rotate(bullet, i[2]*90), (centerPos[0] + size * i[0] - g, centerPos[1] + size * i[1] - g))
 
 def blitPacks(healthPacks, ammoPacks, screen, heart, bullet):
 	global centerPos, size
@@ -361,3 +375,9 @@ def blitPet(petxy, playerxy, screen):
 	else: c = "1"
 	screen.blit(eval(petxy[2] + c), (centerPos[0] + petxy[0] * size - size // 2, centerPos[1] + petxy[1] * size - size // 2))
 
+def blitHealthBars(enemies, screen):
+	global centerPos, size, healthBar
+	for i in enemies:
+		if i[-2] > 0:
+			print(int(13 * (i[8] / i[7])))
+			screen.blit(healthBar[int(13 * (i[8] / i[7]))], (centerPos[0] + (i[0] - 0.5) * size - size // 2, centerPos[1] + (i[1] - 0.5) * size - size // 2))

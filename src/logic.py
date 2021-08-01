@@ -67,7 +67,7 @@ def spawnBullet(bullets, x, y, direction, bulletSpeed, fps, eop):
 	elif direction == 3: bullets.append([x + 0.51, y, direction, bulletSpeed/fps, eop])
 	return bullets
 
-def checkBulletCollisions(bullets, wholeRoomData, breakableData, playerxy, enemies, health, healthPacks, ammoPacks):
+def checkBulletCollisions(bullets, wholeRoomData, breakableData, playerxy, enemies, health, healthPacks, ammoPacks, rareLoot, lockedPets, lockedTanks):
 	bullets2, bullets3 = [], []
 	for i in range(0, len(bullets)):
 		x, y = int(bullets[i][0]), int(bullets[i][1])
@@ -77,19 +77,45 @@ def checkBulletCollisions(bullets, wholeRoomData, breakableData, playerxy, enemi
 		if bullets[i][4] == 0:
 			for j in range(0, len(enemies)):
 				if int(enemies[j][0]) == x and int(enemies[j][1]) == y:
-					enemies.pop(j)
-					k = 2
-					if randint(0, 4) == 0:
-						healthPacks.append([x + 0.5 + uniform(-0.2, 0.2), y + 0.5 + uniform(-0.2, 0.2)])
+					if enemies[j][-2] == 0:
+						enemies.pop(j)
+						k = 2
+						if randint(0, 4) == 0:
+							healthPacks.append([x + 0.5 + uniform(-0.2, 0.2), y + 0.5 + uniform(-0.2, 0.2)])
+						else:
+							for v in range(0, randint(0, 15)):
+								ammoPacks.append([x + 0.5 + uniform(-0.2, 0.2), y + 0.5 + uniform(-0.2, 0.2)])
 					else:
-						for v in range(0, randint(0, 15)):
-							ammoPacks.append([x + 0.5 + uniform(-0.2, 0.2), y + 0.5 + uniform(-0.2, 0.2)])
-					break
+						if int(enemies[j][0]) == x and int(enemies[j][1]) == y and enemies[j][-2] != 0:
+							if enemies[j][-1] > 1:
+								enemies[j][-1] -= 1
+								k = 2
+							else:
+								enemies.pop(j)
+								for y in range(3, 8): healthPacks.append([x + 0.5 + uniform(-0.2, 0.2), y + 0.5 + uniform(-0.2, 0.2)])
+								for y in range(30, 100): ammoPacks.append([x + 0.5 + uniform(-0.2, 0.2), y + 0.5 + uniform(-0.2, 0.2)])
+								if lockedTanks[1] == 1: rareLoot.append([x, y, 0])
+								elif lockedTanks[2] == 1: rareLoot.append([x, y, 1])
+								elif lockedPets[1] == 1: rareLoot.append([x, y, 2])
+								elif lockedTanks[3] == 1: rareLoot.append([x, y, 3])
+								elif lockedPets[2] == 1: rareLoot.append([x, y, 4])
+								k = 2
+				break
 		elif bullets[i][4] == 1:
 			if int(playerxy[0]) == x and int(playerxy[1]) == y:
 				health -= 1
 				k = 2
 				break
+			for j in range(0, len(enemies)):
+				if int(enemies[j][0]) == x and int(enemies[j][1]) == y and enemies[j][-2] != 0:
+					ammoPacks.append([x + 0.5, y + 0.5])
+					k = 2
+					break
+
+		elif bullets[i][4] == 2 and int(playerxy[0]) == x and int(playerxy[1]) == y:
+			health -= 1
+			k = 2
+			break
 
 		if k == 3:
 			wholeRoomData[y][x] = 1
@@ -104,12 +130,12 @@ def checkBulletCollisions(bullets, wholeRoomData, breakableData, playerxy, enemi
 			if int(bullets2[i][1]) == int(bullets2[j][1]) and int(bullets2[i][0]) == int(bullets2[j][0]) and bullets2[i] in bullets3 and bullets2[j] in bullets3:
 				bullets3.pop(bullets3.index(bullets2[i]))
 				bullets3.pop(bullets3.index(bullets2[j]))
-	return bullets3, wholeRoomData, breakableData, enemies, health, healthPacks, ammoPacks
+	return bullets3, wholeRoomData, breakableData, enemies, health, healthPacks, ammoPacks, rareLoot
 
-def spawnEnemy(enemies, x, y, tt):
-	enemies.append([x, y, 1, tt, 0, 0, 0])
+def spawnEnemy(enemies, x, y, tt, j):
+	enemies.append([x, y, 1, tt, 0, 0, 0, j, j])
 
-def spreadEnemy(enemies, wholeRoomData, tt, playerxy):
+def spreadEnemy(enemies, wholeRoomData, tt, s, playerxy):
 	usableTiles = []
 	for i in range(0, len(wholeRoomData)):
 		for j in range(0, len(wholeRoomData[i])):
@@ -128,7 +154,7 @@ def spreadEnemy(enemies, wholeRoomData, tt, playerxy):
 		if not a:
 			usedTile = usableTiles[g]
 			break
-	if ticksi < 360: spawnEnemy(enemies, usedTile[1] + 0.5, usedTile[0] + 0.5, tt)
+	if ticksi < 360: spawnEnemy(enemies, usedTile[1] + 0.5, usedTile[0] + 0.5, tt, s)
 
 def roundTo8(x, base = 8):
 	return int(base * math.ceil(float(x) / base) - 8)
@@ -158,12 +184,14 @@ def shootEnemies(enemies, bullets, wholeRoomData, tt, fps, playerxy):
 						enemies[i][2] = 1
 			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 30) == 0:
 				enemies[i][5] = 0
-				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps, 1)
+				if enemies[i][-2] == 0: spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps, 1)
+				else: spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps, 2)
 
 		elif "3" in wholeRoomData[int(enemies[i][1])]:
 			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 90) == 0:
 				enemies[i][5] = 0
-				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps, 1)
+				if enemies[i][-2] == 0: spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps, 1)
+				else: spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps, 2)
 		
 		if int(playerxy[0]) == int(enemies[i][0]):
 			j = True
@@ -176,12 +204,14 @@ def shootEnemies(enemies, bullets, wholeRoomData, tt, fps, playerxy):
 						enemies[i][2] = 0
 			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 30) == 0:
 				enemies[i][5] = 0
-				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps, 1)
+				if enemies[i][-2] == 0: spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps, 1)
+				else: spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps, 2)
 
 		elif h[int(enemies[i][0])]:
 			if enemies[i][5] > tt[enemies[i][3] + 1][2]*fps/2 and randint(0, 90) == 0:
 				enemies[i][5] = 0
-				spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps, 1)
+				if enemies[i][-2] == 0: spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps, 1)
+				else: spawnBullet(bullets, enemies[i][0], enemies[i][1], enemies[i][2], tt[enemies[i][3] + 1][1], fps, 2)
 		if j == False and g == enemies[i][2] and enemies[i][4] == 0 and enemies[i][6] == 0 and randint(0, 120) == 0: enemies[i][2] = randint(0, 3)
 	return enemies, bullets
 
@@ -227,7 +257,7 @@ def moveEnemies(enemies, wholeRoomData, fps, tankStats, playerxy):
 			enemies[i][0] = int(enemies[i][0]) + 0.5
 			enemies[i][1] = int(enemies[i][1]) + 0.5
 			enemies[i][4], enemies[i][6] = 0, 0
-		elif randint(0, 60) == 0:
+		elif randint(0, 60) == 0 or enemies[i][-2] != 0 and randint(0, 5) == 0:
 			enemies[i][0] = int(enemies[i][0]) + 0.5
 			enemies[i][1] = int(enemies[i][1]) + 0.5
 			l = False
@@ -278,29 +308,35 @@ def movePet(petxy, playerxy):
 
 def addEnemies(difficulty):
 	enemiesToAdd = []
-	if difficulty == 0: enemiesToAdd.append([1, False])
+	if difficulty == 0: enemiesToAdd.append([1])
 	if difficulty == 1:
-		for i in range(0, randint(7, 15)): enemiesToAdd.append([0, False])
-		for i in range(0, randint(0, 3)): enemiesToAdd.append([1, False])
+		for i in range(0, randint(7, 15)): enemiesToAdd.append([0])
+		for i in range(0, randint(0, 3)): enemiesToAdd.append([1])
 	elif difficulty == 2:
-		for i in range(0, randint(10, 20)): enemiesToAdd.append([0, False])
-		for i in range(0, randint(5, 10)): enemiesToAdd.append([1, False])
-		for i in range(0, randint(0, 3)): enemiesToAdd.append([2, False])
+		for i in range(0, randint(10, 20)): enemiesToAdd.append([0])
+		for i in range(0, randint(5, 10)): enemiesToAdd.append([1])
+		for i in range(0, randint(0, 3)): enemiesToAdd.append([2])
 	elif difficulty == 3:
-		for i in range(0, randint(15, 25)): enemiesToAdd.append([0, False])
-		for i in range(0, randint(10, 20)): enemiesToAdd.append([1, False])
-		for i in range(0, randint(5, 10)): enemiesToAdd.append([2, False])
+		for i in range(0, randint(15, 25)): enemiesToAdd.append([0])
+		for i in range(0, randint(10, 20)): enemiesToAdd.append([1])
+		for i in range(0, randint(5, 10)): enemiesToAdd.append([2])
 	elif difficulty == 4:
-		for i in range(0, randint(15, 30)): enemiesToAdd.append([0, False])
-		for i in range(0, randint(10, 25)): enemiesToAdd.append([1, False])
-		for i in range(0, randint(10, 20)): enemiesToAdd.append([2, False])
+		for i in range(0, randint(15, 30)): enemiesToAdd.append([0])
+		for i in range(0, randint(10, 25)): enemiesToAdd.append([1])
+		for i in range(0, randint(10, 20)): enemiesToAdd.append([2])
 	elif difficulty == 5 or difficulty == 6 or difficulty == 7:
-		for i in range(0, randint(15, 30)): enemiesToAdd.append([0, False])
-		for i in range(0, randint(10, 25)): enemiesToAdd.append([1, False])
-		for i in range(0, randint(10, 30)): enemiesToAdd.append([2, False])
-		enemiesToAdd.append([3, True])
+		for i in range(0, randint(5, 20)): enemiesToAdd.append([0])
+		for i in range(0, randint(15, 25)): enemiesToAdd.append([1])
+		for i in range(0, randint(15, 30)): enemiesToAdd.append([2])
+		j = randint(7, 11)
+		enemiesToAdd.append([3, j])
 	if difficulty == 6 or difficulty == 7:
-		for i in range(0, randint(0, 1)): enemiesToAdd.append([3, True])
+		if randint(0, 1) == 0:
+			j = randint(7, 11)
+			enemiesToAdd.append([3, j])
 	if difficulty == 7:
-		for i in range(0, randint(0, 1)): enemiesToAdd.append([3, True])
+		if randint(0, 1) == 0:
+			0
+	j = randint(7, 11)
+	enemiesToAdd.append([3, j])
 	return enemiesToAdd

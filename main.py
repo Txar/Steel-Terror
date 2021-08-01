@@ -7,6 +7,8 @@ from random import *
 mixer.pre_init(44100, -16, 2, 1024)
 mixer.init()
 beep = mixer.Sound("sfx/hit.wav")
+bulletSound = mixer.Sound("sfx/bullet.wav")
+bulletSound.set_volume(0.4)
 
 init()
 display.set_caption('Battle Big City')
@@ -24,9 +26,10 @@ petxy = [0, 0, "snek"] #none, duck, snek
 health = 3
 healthPacks = [] #[x, y]
 ammoPacks = [] #[x, y]
+rareLoot = [] #[x, y, what is it] things: 0 = fast tank, 1 = fat tank, 2 = duck, 3 = epic tank, 4 = snek
 ammo = 50
 bullets = [] #[bullet x, bullet y, bullet direction, bullet distance to move, 0 is player bullet 1 is enemy bullets]
-enemies = [] #[x, y, direction, tank type, distance to move, ticks since the last shot, how many times travel the "distance to move"]
+enemies = [] #[x, y, direction, tank type, distance to move, ticks since the last shot, how many times travel the "distance to move", (if boss) max hp, (if boss) current hp]
 enemiesToAdd = []#[type, if boss]
 spawnCooldown = 120
 
@@ -77,12 +80,15 @@ colors = False
 
 colorList = [[1, 1, 2], [1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 0, 1], [0.5, 0.2, 0.5], [0, 1, 1], [1, 1, 0], [1, 1, 1], [0.5, 0.5, 0.5]]
 lockedColors = [0, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+lockedPets = [0, 1, 1]
+lockedTanks = [0, 1, 1, 1]
 t = 0
 t2 = 0
 deltaTime = 0
 lastTicks = 0
 
 bullet = surfaceImage(Image.open("sprites/tanks/bullet.png").resize((8 * size, 8 * size), Image.NONE))
+enemyBullet = surfaceImage(Image.open("sprites/tanks/bullet1.png").resize((8 * size, 8 * size), Image.NONE))
 heart = surfaceImage(Image.open("sprites/ui/heart.png").resize((4 * size, 4 * size), Image.NONE))
 tank = surfaceImage(Image.open("sprites/ui/tank.png").resize((8 * size, 8 * size), Image.NONE))
 buttSurface = surfaceNinepatch("sprites/ui/colorButton.9.png", 16, 9, size)
@@ -171,6 +177,7 @@ while 1:
 				mask = colorr
 
 	if game:
+		dd = len(bullets)
 		playerSpeed, playerBulletSpeed, playerShootCooldown, tankSprite, tankTrackSprite = tankStats[int(tankStats[0])+1]
 		if t2 < 999: t2 += 1
 		for e in ee:
@@ -233,33 +240,36 @@ while 1:
 		if cc:
 			data, waterData, bushData, blockData, breakableData, wholeRoomData, biome = mapMap[mapPos[0]][mapPos[1]]
 			enemiesToAdd = addEnemies(diffMap[mapPos[0]][mapPos[1]])
-
+			healthPacks = []
+			ammoPacks = []
 			cc = 0
 
 		movePet(petxy, playerxy)
 		bullets = moveBullets(bullets)
 		health, ammo, healthPacks, ammoPacks = pickupPacks(health, ammo, healthPacks, ammoPacks, playerxy)
-		bullets, wholeRoomData, breakableData, enemies, health, healthPacks, ammoPacks = checkBulletCollisions(bullets, wholeRoomData, breakableData, playerxy, enemies, health, healthPacks, ammoPacks)
+		bullets, wholeRoomData, breakableData, enemies, health, healthPacks, ammoPacks, rareLoot = checkBulletCollisions(bullets, wholeRoomData, breakableData, playerxy, enemies, health, healthPacks, ammoPacks, rareLoot, lockedPets, lockedTanks)
 		enemies, bullets = shootEnemies(enemies, bullets, wholeRoomData, tankStats, fps, playerxy)
 		moveEnemies(enemies, wholeRoomData, fps, tankStats, playerxy)
 		if spawnCooldown == 0:
 			spawnCooldown = randint(60, 240)
 
-			if(len(enemiesToAdd) <= 1):
-				h = 0
-			else:
-				h = randint(0, len(enemiesToAdd) - 1)
+			if(len(enemiesToAdd) <= 1): h = 0
+			else: h = randint(0, len(enemiesToAdd) - 1)
 
 			if len(enemiesToAdd) > 0:
 				if len(enemiesToAdd[h]) > 0:
-					spreadEnemy(enemies, wholeRoomData, enemiesToAdd[h][0], playerxy)
+					if len(enemiesToAdd[h]) == 2: spreadEnemy(enemies, wholeRoomData, enemiesToAdd[h][0], enemiesToAdd[h][1], playerxy)
+					else: spreadEnemy(enemies, wholeRoomData, enemiesToAdd[h][0], 0, playerxy)
 				enemiesToAdd.pop(h)
+			elif len(enemies) == 1 and enemies[0][-2] != 0: spreadEnemy(enemies, wholeRoomData, 2, 0, playerxy)
 		else: spawnCooldown -= 1
 
 		for i in range(-1, 2):
 			for j in range(-1, 2):
 				if j == 0 and i == 0: continue
 				blitSurround(screen, t, i * 20, j * 16, mapMap[mapPos[0] + i][mapPos[1] + j])
+
+		if len(bullets) < dd: bulletSound.play()
 
 		blitRoom(data, screen)
 		blitWater(waterData, screen, floor(t))
@@ -271,10 +281,12 @@ while 1:
 		blitBreakBlock(breakableData, biome, screen)
 		blitBush(bushData, biome, screen)
 		if len(enemies) + len(enemiesToAdd) != 0: blitFrame(screen, biome)
+		blitHealthBars(enemies, screen)
 		blitPet(petxy, playerxy, screen)
 
 		if(ammo != prevAmmo):
 			bulletButtSurface = surfaceNinepatch("sprites/ui/colorButton.9.png", 11 + int(len(str(ammo)) * 2), 9, size)
+
 
 		blitHealth(screen, health, size, heart)
 		blitAmmo(screen, ammo, size, scw - 20 * size, size, ff, bullet, bulletButtSurface)
