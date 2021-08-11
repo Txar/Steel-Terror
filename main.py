@@ -83,7 +83,7 @@ for i in range(mapSize):
 			mapMap[i].append(renderRoom(f.read(), biomeDict[jj]))
 			f.close()
 
-display.toggle_fullscreen()
+#display.toggle_fullscreen()
 
 mapPos = [10, 10]
 
