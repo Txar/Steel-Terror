@@ -448,3 +448,8 @@ def blitGoldenUnlocks(rareLoot, screen):
 	global centerPos, size, goldenUnlock
 	for i in rareLoot:
 		screen.blit(goldenUnlock, (centerPos[0] + i[0] * size - size * 0.25, centerPos[1] + i[1] * size - size * 0.25))
+
+def blitFloor(biome, screen):
+	for i in range(0, 20):
+		for j in range(0, 16):
+			screen.blit(biome[0], (centerPos[0] + i * size, centerPos[1] + j * size))

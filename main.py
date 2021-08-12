@@ -20,7 +20,7 @@ selectSound.set_volume(0.4)
 mixer.music.load("music/song.mp3")
 
 init()
-display.set_caption('Steel Terror')
+display.set_caption('haha tank go brrrrrr')
 
 screen, size, scw, sch, centerPos = loadScreen(20, 16)
 forest, desert, ice, dungeon, tanks, enemyTanks, treads, bullet = loadImages()
@@ -136,7 +136,6 @@ prevEnemies = -1
 mixer.music.play()
 while 1:
 	ee = event.get()
-
 	if menu:
 		button(screen, mouse, size, scw // 2, sch // 2 - 60 * size, 2, 2, "sprites/ui/colorButton.9.png", "sprites/ui/colorButton.9.png", "sprites/ui/title.png")
 		play = button(screen, mouse, size, scw // 2, sch // 2 - 15 * size, 2, 2, "sprites/ui/button.9.png", "sprites/ui/buttonPressed.9.png", "sprites/ui/play.png")
@@ -229,6 +228,7 @@ while 1:
 		eeeeee = False
 
 	if game:
+		dddd = 0
 		dd = len(bullets)
 		playerSpeed, playerBulletSpeed, playerShootCooldown, tankSprite, tankTrackSprite = tankStats[int(tankStats[0])+1]
 		if t2 < 999: t2 += 1
@@ -255,6 +255,71 @@ while 1:
 
 					game = False
 					menu = True
+
+				elif e.key == K_UP or e.key == K_i:
+					if mapPos[1] - 1 >= 0:
+						mapPos[1] -= 1
+						blitSurround(screen, t, i * 20, j * 16, mapMap[mapPos[0] + i][mapPos[1] + j])
+						cc = 1
+						playerxy = [0.5, 0.5, 0]
+						enemiesToAdd = addEnemies(diffMap[mapPos[0]][mapPos[1]])
+						enemies = []
+				elif e.key == K_DOWN or e.key == K_k:
+					if mapPos[1] + 1 <= 19:
+						mapPos[1] += 1
+						blitSurround(screen, t, i * 20, j * 16, mapMap[mapPos[0] + i][mapPos[1] + j])
+						cc = 1
+						playerxy = [0.5, 0.5, 0]
+						enemiesToAdd = addEnemies(diffMap[mapPos[0]][mapPos[1]])
+						enemies = []
+				elif e.key == K_RIGHT or e.key == K_l:
+					if mapPos[0] + 1 <= 19:
+						mapPos[0] += 1
+						blitSurround(screen, t, i * 20, j * 16, mapMap[mapPos[0] + i][mapPos[1] + j])
+						cc = 1
+						playerxy = [0.5, 0.5, 0]
+						enemiesToAdd = addEnemies(diffMap[mapPos[0]][mapPos[1]])
+						enemies = []
+				elif e.key == K_LEFT or e.key == K_j:
+					if mapPos[0] - 1 >= 0:
+						mapPos[0] -= 1
+						blitSurround(screen, t, i * 20, j * 16, mapMap[mapPos[0] + i][mapPos[1] + j])
+						cc = 1
+						playerxy = [0.5, 0.5, 0]
+						enemiesToAdd = addEnemies(diffMap[mapPos[0]][mapPos[1]])
+						enemies = []
+				elif e.key == K_0:
+					if len(enemies) > 0:
+						enemies.pop(0)
+					elif len(enemiesToAdd) > 0:
+						enemiesToAdd.pop(0)
+				elif e.key == K_6:
+					enemiesToAdd.append([0])
+				elif e.key == K_7:
+					enemiesToAdd.append([1])
+				elif e.key == K_8:
+					enemiesToAdd.append([2])
+				elif e.key == K_9:
+					enemiesToAdd.append([3, randint(7, 11)])
+				elif e.key == K_f:
+					spawnCooldown = 0
+				elif e.key == K_1:
+					mapMap[mapPos[0]][mapPos[1]] = (mapMap[mapPos[0]][mapPos[1]][0], mapMap[mapPos[0]][mapPos[1]][1], mapMap[mapPos[0]][mapPos[1]][2], mapMap[mapPos[0]][mapPos[1]][3], mapMap[mapPos[0]][mapPos[1]][4], mapMap[mapPos[0]][mapPos[1]][5], biomeDict[1])
+					cc = 1
+					diffMap[mapPos[0]][mapPos[1]] = randint(1, 4)
+				elif e.key == K_2:
+					mapMap[mapPos[0]][mapPos[1]] = (mapMap[mapPos[0]][mapPos[1]][0], mapMap[mapPos[0]][mapPos[1]][1], mapMap[mapPos[0]][mapPos[1]][2], mapMap[mapPos[0]][mapPos[1]][3], mapMap[mapPos[0]][mapPos[1]][4], mapMap[mapPos[0]][mapPos[1]][5], biomeDict[2])
+					cc = 1
+					diffMap[mapPos[0]][mapPos[1]] = randint(1, 4)
+				elif e.key == K_3:
+					mapMap[mapPos[0]][mapPos[1]] = (mapMap[mapPos[0]][mapPos[1]][0], mapMap[mapPos[0]][mapPos[1]][1], mapMap[mapPos[0]][mapPos[1]][2], mapMap[mapPos[0]][mapPos[1]][3], mapMap[mapPos[0]][mapPos[1]][4], mapMap[mapPos[0]][mapPos[1]][5], biomeDict[3])
+					cc = 1
+					diffMap[mapPos[0]][mapPos[1]] = randint(1, 4)
+				elif e.key == K_4:
+					mapMap[mapPos[0]][mapPos[1]] = (mapMap[mapPos[0]][mapPos[1]][0], mapMap[mapPos[0]][mapPos[1]][1], mapMap[mapPos[0]][mapPos[1]][2], mapMap[mapPos[0]][mapPos[1]][3], mapMap[mapPos[0]][mapPos[1]][4], mapMap[mapPos[0]][mapPos[1]][5], biomeDict[5])
+					cc = 1
+					dddd = 1
+					diffMap[mapPos[0]][mapPos[1]] = randint(5, 7)
 
 		if not game: continue
 		keys = key.get_pressed()
@@ -293,6 +358,9 @@ while 1:
 			if diffMap[mapPos[0]][mapPos[1]] > 4: mixer.music.queue("music/song2.mp3")
 			else: mixer.music.queue("music/song.mp3")
 			data, waterData, bushData, blockData, breakableData, wholeRoomData, biome = mapMap[mapPos[0]][mapPos[1]]
+			if dddd:
+				mixer.music.load("music/song2.mp3")
+				mixer.music.play()
 			if compMap[mapPos[0]][mapPos[1]] == 0:
 				enemies = []
 				enemiesToAdd = addEnemies(diffMap[mapPos[0]][mapPos[1]])
@@ -328,6 +396,7 @@ while 1:
 		if len(bullets) < dd: bulletSound.play()
 
 		blitRoom(data, screen)
+		blitFloor(biome, screen)
 		blitWater(waterData, screen, floor(t))
 		blitGoldenUnlocks(rareLoot, screen)
 		blitPacks(healthPacks, ammoPacks, screen, heart, bullet)
@@ -364,6 +433,7 @@ while 1:
 			playerxy = [0.5, 0.5, 0]
 			mapPos = [10, 10]
 			screen.blit(Surface((scw, sch)), (0, 0))
+			enemies = []
 			enemiesToAdd = addEnemies(diffMap[mapPos[0]][mapPos[1]])
 			for i in range(-1, 2):
 				for j in range(-1, 2):

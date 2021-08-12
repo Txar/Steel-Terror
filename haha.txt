@@ -1,0 +1,6 @@
+use arrows/IJKL to move to the other tiles
+1, 2, 3, 4 to change biome
+F to summon a enemy from the queue
+6, 7, 8, 9 to add enemies to the queue
+0 removes an enemy
+ye thats it
